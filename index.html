@@ -836,6 +836,7 @@ function emEnsureProductEditModal(){
  '<label style="display:block;font-size:12px;font-weight:700;margin:9px 0">Nombre<input id="emEditName" style="display:block;width:100%;box-sizing:border-box;padding:10px;margin-top:5px;border:1px solid #ccc;border-radius:6px"></label>'+
  '<label style="display:block;font-size:12px;font-weight:700;margin:9px 0">Categoría<select id="emEditCat" style="display:block;width:100%;padding:10px;margin-top:5px;border:1px solid #ccc;border-radius:6px;background:#fff"></select></label>'+
  '<label style="display:block;font-size:12px;font-weight:700;margin:9px 0">Precio normal<input id="emEditPrice" type="number" min="0" step="0.01" style="display:block;width:100%;box-sizing:border-box;padding:10px;margin-top:5px;border:1px solid #ccc;border-radius:6px"></label>'+
+ '<label style="display:block;font-size:12px;font-weight:700;margin:9px 0">Precio anterior<input id="emEditPreviousPrice" type="number" min="0" step="0.01" placeholder="Ej. 699.00" style="display:block;width:100%;box-sizing:border-box;padding:10px;margin-top:5px;border:1px solid #ccc;border-radius:6px"><span style="display:block;font-size:10px;color:#777;margin-top:4px">Opcional. Se mostrará tachado cuando sea mayor que el precio actual.</span></label>'+
  '<label style="display:block;font-size:12px;font-weight:700;margin:9px 0">Descuento<select id="emEditDiscount" style="display:block;width:100%;padding:10px;margin-top:5px;border:1px solid #ccc;border-radius:6px;background:#fff">'+
  '<option value="0">Sin descuento</option><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option></select></label>'+
  '<label style="display:block;font-size:12px;font-weight:700;margin:9px 0">Descripción<textarea id="emEditDescription" style="display:block;width:100%;box-sizing:border-box;min-height:120px;padding:10px;margin-top:5px;border:1px solid #ccc;border-radius:6px;resize:vertical"></textarea></label>'+
@@ -867,11 +868,14 @@ async function emSaveProductEdit(){
  const name=document.getElementById('emEditName').value.trim();
  const price=Number(document.getElementById('emEditPrice').value);
  const discount_percent=Number(document.getElementById('emEditDiscount').value||0);
+ const previous_price_raw=document.getElementById('emEditPreviousPrice').value.trim();
+ const compare_at_price=previous_price_raw===''?null:Number(previous_price_raw);
  const description=document.getElementById('emEditDescription').value;
  const category_id=document.getElementById('emEditCat').value||null;
- if(!name||!Number.isFinite(price)||price<0||!Number.isFinite(discount_percent)||discount_percent<0||discount_percent>100){alert('Revisa nombre, precio y descuento.');return;}
+ if(!name||!Number.isFinite(price)||price<0||!Number.isFinite(discount_percent)||discount_percent<0||discount_percent>100|| (previous_price_raw!=='' && (!Number.isFinite(compare_at_price)||compare_at_price<0))){alert('Revisa nombre, precios y descuento.');return;}
+ if(compare_at_price!==null && compare_at_price<=price){alert('El precio anterior debe ser mayor que el precio actual para mostrar una rebaja.');return;}
  try{
-   const {error}=await elamodaSB.from('products').update({name,category_id,price,discount_percent,compare_at_price:discount_percent>0?price:null,description,updated_at:new Date().toISOString()}).eq('id',p.id);
+   const {error}=await elamodaSB.from('products').update({name,category_id,price,discount_percent,compare_at_price,description,updated_at:new Date().toISOString()}).eq('id',p.id);
    if(error)throw error;
    emCloseProductEdit();
    await emLoadRemote(); emRenderAll(); await emApplyStore();
@@ -892,6 +896,7 @@ function emEnsureAddProductModal(){
  '</details>'+
  '<details open style="border:1px solid #eee;border-radius:9px;padding:12px;margin-bottom:10px"><summary style="cursor:pointer;font-weight:700">💰 Precio y descuento</summary>'+
  '<label style="display:block;font-size:12px;font-weight:700;margin-top:12px">Precio normal<input id="emAddPrice" type="number" min="0" step="0.01" placeholder="299.00" style="display:block;width:100%;box-sizing:border-box;padding:10px;margin-top:6px;border:1px solid #ccc;border-radius:7px"></label>'+
+ '<label style="display:block;font-size:12px;font-weight:700;margin-top:12px">Precio anterior<input id="emAddPreviousPrice" type="number" min="0" step="0.01" placeholder="399.00" style="display:block;width:100%;box-sizing:border-box;padding:10px;margin-top:6px;border:1px solid #ccc;border-radius:7px"><span style="display:block;font-size:10px;color:#777;margin-top:4px">Opcional.</span></label>'+
  '<label style="display:block;font-size:12px;font-weight:700;margin-top:12px">Descuento<select id="emAddDiscount" style="display:block;width:100%;padding:10px;margin-top:6px;border:1px solid #ccc;border-radius:7px;background:#fff"><option value="0">Sin descuento</option><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option></select></label>'+
  '</details>'+
  '<details open style="border:1px solid #eee;border-radius:9px;padding:12px;margin-bottom:10px"><summary style="cursor:pointer;font-weight:700">📝 Descripción</summary>'+
@@ -922,16 +927,19 @@ async function emSaveNewProduct(){
  const category_id=document.getElementById('emAddCat').value;
  const price=Number(document.getElementById('emAddPrice').value);
  const discount_percent=Number(document.getElementById('emAddDiscount').value||0);
+ const previous_price_raw=document.getElementById('emAddPreviousPrice').value.trim();
+ const compare_at_price=previous_price_raw===''?null:Number(previous_price_raw);
  const description=(document.getElementById('emAddDescription').value||'').trim();
- if(!name||!category_id||!Number.isFinite(price)||price<0||!Number.isFinite(discount_percent)||discount_percent<0||discount_percent>100){
-   alert('Revisa nombre, categoría, precio y descuento.');return;
+ if(!name||!category_id||!Number.isFinite(price)||price<0||!Number.isFinite(discount_percent)||discount_percent<0||discount_percent>100||(previous_price_raw!==''&&(!Number.isFinite(compare_at_price)||compare_at_price<0))){
+   if(compare_at_price!==null && compare_at_price<=price){alert('El precio anterior debe ser mayor que el precio actual para mostrar una rebaja.');return;}
+   alert('Revisa nombre, categoría, precios y descuento.');return;
  }
  const category=EM.categories.find(c=>String(c.id)===String(category_id));
  const slug=emSlug(name)+'-'+Date.now().toString().slice(-6);
  try{
    const {data:created,error}=await elamodaSB.from('products').insert({
      name,slug,category_id,price,discount_percent,
-     compare_at_price:discount_percent>0?price:null,
+     compare_at_price,
      description,stock:0,stock_min:0,visible:true,featured:false,
      sort_order:(EM.products.length+1)*10
    }).select().single();
