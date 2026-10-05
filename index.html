@@ -490,7 +490,7 @@ const EM_METRO_DEFAULT={
 'Línea 12':'Mixcoac,Insurgentes Sur,Hospital 20 de Noviembre,Zapata,Parque de los Venados,Eje Central,Ermita,Mexicaltzingo,Atlalilco,Culhuacán,San Andrés Tomatlán,Lomas Estrella,Calle 11,Periférico Oriente,Tezonco,Olivos,Nopalera,Zapotitlán,Tlaltenco,Tláhuac'};
 const EM_METROBUS_DEFAULT={
 'Línea 1':'Indios Verdes,Deportivo 18 de Marzo,Euzkaro,Potrero,La Raza,Circuito,San Simón,Manuel González,Buenavista,El Chopo,Revolución,Plaza de la República,Reforma,Hamburgo,Glorieta Insurgentes,Durango,Álvaro Obregón,Sonora,Campeche,Chilpancingo,Nuevo León,La Piedad,Poliforum,Nápoles,Colonia del Valle,Ciudad de los Deportes,Parque Hundido,Félix Cuevas,Río Churubusco,Teatro Insurgentes,José María Velasco,Francia,Olivo,Altavista,La Bombilla,Doctor Gálvez,Ciudad Universitaria,Centro Cultural Universitario,Perisur,Villa Olímpica,Corregidora,Ayuntamiento,Fuentes Brotantes,Santa Úrsula,La Joya,El Caminero',
-'Línea 2':'Tepalcates,Canal de San Juan,General Antonio de León,Nicolás Bravo,Constitución de Apatzingán,CCH Oriente,Leyes de Reforma,Del Moral,Río Frío,Rojo Gómez,Río Mayo,Río Tecolutla,El Rodeo,UPIICSA,Iztacalco,Goma,Tlacotal,Canela,Coyuya,La Viga,Andrés Molina,Las Américas,Xola,Álamos,Centro SCOP,Doctor Vértiz,Etiopía,Amores,Viaducto,Nuevo León,Escandón,Patriotismo,De La Salle,Parque Lira,Antonio Maceo,Tacubaya',
+'Línea 2':'Tacubaya,Parque Lira,Antonio Maceo,De La Salle,Patriotismo,Escandón,Nuevo León,Viaducto,Amores,Etiopía,Doctor Vértiz,Centro SCOP,Álamos,Xola,Las Américas,Andrés Molina,La Viga,Coyuya,Canela,Tlacotal,Goma,Iztacalco,UPIICSA,El Rodeo,Río Tecolutla,Río Mayo,Río Frío,Rojo Gómez,Del Moral,Leyes de Reforma,CCH Oriente,Constitución de Apatzingán,Nicolás Bravo,General Antonio de León,Canal de San Juan,Tepalcates',
 'Línea 3':'Tenayuca,San José de la Escalera,Progreso Nacional,Tres Anegas,Júpiter,La Patera,Poniente 146,Montevideo,Poniente 128,Vallejo,Norte 45,Coltongo,Cuitláhuac,La Raza,Hospital La Raza,Potrero,Manuel González,Guerrero,Hidalgo,Juárez,Cuauhtémoc,Centro Médico,Etiopía,Amores,Obrero Mundial,Hospital General,Centro Médico,Escuadrón 201,División del Norte,Eugenia,Zapata,Hospital 20 de Noviembre,Parque de los Venados,Emiliano Zapata,Pueblo Santa Cruz Atoyac',
 'Línea 4':'Buenavista,Museo San Carlos,Hidalgo,República de Argentina,Teatro del Pueblo,República de Chile,Alameda Oriente,San Lázaro,Terminal 1,Terminal 2,Glorieta de Cuitláhuac,Delegación Cuauhtémoc,República de Brasil,República de Argentina,Teatro del Pueblo,República de Chile,Alameda Oriente,San Lázaro,Terminal 1,Terminal 2',
 'Línea 5':'Río de los Remedios,5 de Mayo,San Juan de Aragón,Preparatoria 3,Vasco de Quiroga,Victoria Oriente,El Coyol,Deportivo Eduardo Molina,San Lázaro,Moctezuma,Venustiano Carranza,Terminal Aérea,La Raza,Hospital La Raza,Montevideo,Instituto del Petróleo,San Juan de Aragón,Preparatoria 1',
@@ -505,9 +505,15 @@ function emNormalizeDeliveryDefaults(){
    const old=current.find(x=>x.name===name)||{};
    const oldStations=Array.isArray(old.stations)?old.stations:[];
    const stationMap=new Map(oldStations.map(x=>[String(x.name),x]));
-   const stations=st.split(',').map(x=>x.trim()).filter(Boolean).map(name=>stationMap.get(name)||{name,enabled:true,cost:null});
-   // Conserva estaciones personalizadas que el administrador ya hubiera creado.
-   oldStations.forEach(x=>{if(x&&x.name&&!stations.some(s=>s.name===x.name))stations.push(x)});
+   let stations=st.split(',').map(x=>x.trim()).filter(Boolean).map(name=>stationMap.get(name)||{name,enabled:true,cost:null});
+   // Las líneas oficiales no conservan estaciones antiguas que ya no pertenecen a esa línea.
+   // Esto evita que una configuración anterior muestre estaciones equivocadas.
+   if(type==='metrobus' && name==='Línea 2'){
+    stations=st.split(',').map(x=>x.trim()).filter(Boolean).map(name=>stationMap.get(name)||{name,enabled:true,cost:null});
+   } else {
+    // Conserva estaciones personalizadas que el administrador ya hubiera creado.
+    oldStations.forEach(x=>{if(x&&x.name&&!stations.some(s=>s.name===x.name))stations.push(x)});
+   }
    return {...old,name,enabled:old.enabled!==false,cost:old.cost??null,stations};
   });
   // Conserva líneas personalizadas que no formen parte del catálogo oficial.
