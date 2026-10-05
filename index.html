@@ -140,7 +140,12 @@ body{animation:elamodaPageIn .55s ease-out both}
   <div class="cart-foot">
     <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>Productos</span><span id="cartSubtotal">$0.00</span></div>
     <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px"><span>Entrega</span><span id="cartDeliveryCost">$0.00</span></div>
-    <div class="total"><span>Total</span><span id="cartTotal">$0.00</span></div><div style="font-size:11px;color:#777;margin-bottom:10px">Al continuar, enviaremos tu pedido y el total a Elamoda por WhatsApp.</div>
+    <div class="total"><span>Total</span><span id="cartTotal">$0.00</span></div>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:#555;line-height:1.45;margin:0 0 10px;cursor:pointer">
+      <input id="emTermsAccept" type="checkbox" style="margin-top:2px;accent-color:#800020">
+      <span>Acepto los <a id="emCartTermsLink" href="#" target="_blank" rel="noopener" style="color:#800020;font-weight:700;text-decoration:underline">Términos y condiciones</a> de Elamoda.</span>
+    </label>
+    <div style="font-size:10px;color:#777;margin-bottom:10px">Debes seleccionar una opción de entrega y aceptar los términos para poder generar tu pedido.</div>
     <button class="whats-order" onclick="sendWhatsAppOrder()">📱 Enviar pedido por WhatsApp</button>
   </div>
 </aside>
@@ -258,7 +263,8 @@ function emRenderDeliverySelectors(){emNormalizeDeliveryDefaults();const box=doc
 function emRenderDeliveryStations(){const type=document.getElementById('emDeliveryType')?.value,line=document.getElementById('emDeliveryLine')?.value,box=document.getElementById('emDeliveryStationBox');if(!box)return;const L=(EM.delivery?.[type]||[]).find(x=>x.name===line),stations=(L?.stations||[]).filter(x=>x.enabled!==false);box.innerHTML='<select id="emDeliveryStation" onchange="emUpdateDeliverySummary()" style="width:100%;padding:9px;border:1px solid #ddd;border-radius:6px"><option value="">Selecciona una estación</option>'+stations.map(x=>'<option value="'+escapeHtml(x.name)+'">'+escapeHtml(x.name)+'</option>').join('')+'</select>';emUpdateDeliverySummary();}
 function emUpdateDeliverySummary(){const d=emGetDelivery(),el=document.getElementById('emDeliverySummary');if(!el)return;if(!d){el.textContent='Selecciona línea y estación para calcular la entrega.';renderCartTotals();return;}const day=new Date().getDay(),schedule=(day===0||day===6)?(EM.delivery?.weekend||''):(EM.delivery?.weekday||'');el.innerHTML='<b>'+escapeHtml(d.type==='address'?'Otra ubicación':d.label+' · '+d.line+' · '+d.station)+'</b><br><span style="color:#777">Revisa los horarios disponibles al momento de hacer tu pedido.</span><br>Costo de entrega: <b>'+emMoney(d.cost)+'</b>';renderCartTotals();}
 function renderCartTotals(){const subtotal=cart.reduce((s,x)=>s+x.price*x.qty,0),d=emGetDelivery(),delivery=d?Number(d.cost||0):0,total=subtotal+delivery;const a=document.getElementById('cartSubtotal'),b=document.getElementById('cartDeliveryCost'),c=document.getElementById('cartTotal');if(a)a.textContent=money(subtotal);if(b)b.textContent=money(delivery);if(c)c.textContent=money(total);}
-function renderCart(){const box=document.getElementById('cartItems'),badge=document.getElementById('cartBadge');let count=0;if(!cart.length)box.innerHTML='<p style="color:#777;font-size:13px">Aún no has agregado productos.</p>';else box.innerHTML=cart.map(x=>{count+=x.qty;return `<div class="cart-item"><div><b>${escapeHtml(x.name)}</b><small>${money(x.price)} c/u</small><div class="qty"><button onclick="changeQty('${String(x.name).replace(/'/g,"\\'")}',-1)">−</button><span>${x.qty}</span><button onclick="changeQty('${String(x.name).replace(/'/g,"\\'")}',1)">+</button></div></div><b>${money(x.price*x.qty)}</b></div>`}).join('');badge.textContent=count;emRenderDeliverySelectors();renderCartTotals();}
+function emUpdateCartTermsLink(){const a=document.getElementById('emCartTermsLink');if(!a)return;const u=String(EM.config.termsUrl||'').trim();a.href=u&&u!=='#'?u:'#terminos';a.onclick=function(e){if(!u||u==='#'){e.preventDefault();const el=document.getElementById('terminos')||document.querySelector('[id*=terms]');if(el)el.scrollIntoView({behavior:'smooth'});}};}
+function renderCart(){const box=document.getElementById('cartItems'),badge=document.getElementById('cartBadge');let count=0;if(!cart.length)box.innerHTML='<p style="color:#777;font-size:13px">Aún no has agregado productos.</p>';else box.innerHTML=cart.map(x=>{count+=x.qty;return `<div class="cart-item"><div><b>${escapeHtml(x.name)}</b><small>${money(x.price)} c/u</small><div class="qty"><button onclick="changeQty('${String(x.name).replace(/'/g,"\\'")}',-1)">−</button><span>${x.qty}</span><button onclick="changeQty('${String(x.name).replace(/'/g,"\\'")}',1)">+</button></div></div><b>${money(x.price*x.qty)}</b></div>`}).join('');badge.textContent=count;emRenderDeliverySelectors();renderCartTotals();emUpdateCartTermsLink();}
 function openCart(){document.getElementById("cartDrawer").classList.add("open");document.getElementById("overlay").classList.add("show");renderCart();}
 function closeCart(){document.getElementById("cartDrawer").classList.remove("open");document.getElementById("overlay").classList.remove("show");}
 function sendWhatsAppOrder(){ emWhatsApp(); }</script>
@@ -1739,7 +1745,14 @@ function escapeHtml(v){return String(v??'').replace(/[&<>\"]/g,c=>({'&':'&amp;',
 
 function emWhatsApp(){
  if(!cart.length){alert('Agrega productos primero.');return;}
- const subtotal=cart.reduce((s,x)=>s+x.price*x.qty,0); const delivery=emGetDelivery(); if(EM.delivery?.enabled && !delivery){alert('Selecciona una opción de entrega antes de enviar tu pedido.');return;} const deliveryCost=delivery?Number(delivery.cost||0):0; const total=subtotal+deliveryCost;
+ const terms=document.getElementById('emTermsAccept');
+ if(terms && !terms.checked){alert('Para continuar, debes aceptar los Términos y condiciones de Elamoda.');return;}
+ const subtotal=cart.reduce((s,x)=>s+x.price*x.qty,0);
+ const delivery=emGetDelivery();
+ if(!delivery){alert('Selecciona una opción de entrega antes de enviar tu pedido.');return;}
+ const deliveryCost=Number(delivery.cost||0);
+ const total=subtotal+deliveryCost;
+ const guarantee=20;
  const lines=cart.map(x=>{
    const p=EM.products.find(p=>String(p.id)===String(x.id))||{};
    const opts=Array.isArray(x.selectedOptions)?x.selectedOptions:[];
@@ -1749,7 +1762,10 @@ function emWhatsApp(){
    return '• '+(p.code?'['+p.code+'] ':'')+x.name+' x'+x.qty+' — '+emMoney(x.price*x.qty)+optionText;
  }).join('\n\n');
  let template=EM.config.whatsappMessage||'Hola, Elamoda. Quiero realizar este pedido:\n\n{{PRODUCTOS}}\n\nTotal: {{TOTAL}} MXN\n\nQuedo atento(a) para confirmar disponibilidad, pago y entrega.';
- const deliveryText=delivery?'\n\nEntrega: '+(delivery.type==='address'?'Otra ubicación: '+delivery.station:delivery.label+' · '+delivery.line+' · '+delivery.station)+'\nCosto de entrega: '+emMoney(deliveryCost):''; const msg=template.replace(/\{\{PRODUCTOS\}\}/g,lines).replace(/\{\{TOTAL\}\}/g,emMoney(total))+deliveryText;
+ const deliveryText='\n\nEntrega: '+(delivery.type==='address'?'Otra ubicación: '+delivery.station:delivery.label+' · '+delivery.line+' · '+delivery.station)+'\nCosto de entrega: '+emMoney(deliveryCost);
+ const msg=template.replace(/\{\{PRODUCTOS\}\}/g,lines).replace(/\{\{TOTAL\}\}/g,emMoney(total))+deliveryText;
+ const paymentMessage='Para poder agendar tu entrega es necesario realizar un pago de $20 MXN como garantía'+(deliveryCost>0?' más la tarifa de entrega de '+emMoney(deliveryCost):'')+'.\n\nEsto se solicita debido a que en pedidos anteriores algunas personas no acudieron a recoger sus productos. La garantía de $20 MXN se descontará del costo total de tu compra; no es un cargo adicional.\n\n¿Deseas continuar y enviar tu pedido por WhatsApp?';
+ if(!window.confirm(paymentMessage))return;
  window.open('https://wa.me/'+(EM.config.wa||'5215512345678')+'?text='+encodeURIComponent(msg),'_blank');
 }
 function emOpenProductGallery(productId){
