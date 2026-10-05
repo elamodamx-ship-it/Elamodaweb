@@ -1792,36 +1792,104 @@ async function emWhatsApp(){
  if(!(await emClientConfirm(paymentMessage)))return;
  window.open('https://wa.me/'+(EM.config.wa||'5215512345678')+'?text='+encodeURIComponent(msg),'_blank');
 }
-function emOpenProductGallery(productId){
+function emOpenProductGallery(productId, fromHistory){
  const p=EM.products.find(x=>String(x.id)===String(productId));
  if(!p)return;
  const imgs=(p.images||[]).slice(0,20);
- if(!imgs.length){emClientAlert('Este producto todavía no tiene fotos.');return;}
+ const mainImg=p.image_url||imgs[0]||'';
+ if(!mainImg){emClientAlert('Este producto todavía no tiene fotos.');return;}
  let modal=document.getElementById('emPublicGallery');
  if(!modal){
-  modal=document.createElement('div');modal.id='emPublicGallery';modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99998;display:flex;align-items:center;justify-content:center;padding:15px';
-  modal.innerHTML='<div style="background:#fff;border-radius:12px;width:min(850px,96vw);max-height:92vh;overflow:auto;padding:16px"><div style="display:flex;justify-content:space-between;align-items:center"><h3 id="emGalTitle" style="margin:0"></h3><button onclick="document.getElementById(\'emPublicGallery\').remove()" style="border:0;background:#eee;border-radius:50%;width:34px;height:34px;font-size:20px">×</button></div><img id="emGalMain" style="display:block;width:100%;max-height:62vh;object-fit:contain;margin-top:10px;border-radius:8px"><div id="emGalThumbs" style="display:flex;gap:8px;overflow:auto;margin-top:10px"></div><button id="emGalCart" class="emBtn" style="width:100%;margin-top:12px">Agregar al carrito</button></div>';
+  modal=document.createElement('div');
+  modal.id='emPublicGallery';
+  modal.className='em-product-modal';
+  modal.innerHTML='<div class="em-product-modal-card" role="dialog" aria-modal="true" aria-labelledby="emGalTitle">'+
+    '<div class="em-product-modal-head"><span class="em-product-modal-label">Detalle del producto</span><button type="button" id="emGalClose" class="em-product-modal-close" aria-label="Cerrar">×</button></div>'+
+    '<div class="em-product-modal-body">'+
+      '<div class="em-product-modal-media"><img id="emGalMain" alt=""><div id="emGalThumbs" class="em-product-thumbs"></div></div>'+
+      '<div class="em-product-modal-info">'+
+        '<h2 id="emGalTitle"></h2><div id="emGalPrice" class="em-product-modal-price"></div><div id="emGalDescription" class="em-product-modal-description"></div><div id="emGalOptions"></div>'+ 
+        '<button id="emGalFav" type="button" class="em-product-modal-fav">♡ Favorito</button>'+
+        '<button id="emGalCart" type="button" class="emBtn em-product-modal-cart">Agregar al carrito</button>'+ 
+      '</div>'+ 
+    '</div>'+ 
+  '</div>';
   document.body.appendChild(modal);
+  modal.addEventListener('click',e=>{if(e.target===modal)emCloseProductGallery();});
+  document.getElementById('emGalClose').onclick=()=>emCloseProductGallery();
  }
- document.getElementById('emGalTitle').textContent=p.name;
- document.getElementById('emGalMain').src=imgs[0];
+ if(!window.__elamodaProductModalHistory && !fromHistory){
+   try{history.pushState({elamodaProductModal:String(productId)},'',location.href);}catch(e){}
+   window.__elamodaProductModalHistory=true;
+ }
+ modal.dataset.productId=String(productId);
+ document.body.classList.add('elamoda-product-modal-open');
+ const title=document.getElementById('emGalTitle');
+ const main=document.getElementById('emGalMain');
  const thumbs=document.getElementById('emGalThumbs');
- thumbs.innerHTML=imgs.map((u,i)=>'<img src="'+u+'" onclick="document.getElementById(\'emGalMain\').src=this.src" style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1px solid #ddd;cursor:pointer">').join('');
- const galleryOpts=(p.product_options||[]).filter(o=>o.visible!==false);
- const gallerySelectable=galleryOpts.filter(o=>['size','measure','color'].includes(o.option_type));
- const galleryAvailable=gallerySelectable.length ? gallerySelectable.some(o=>Number(o.stock??0)>0) : Number(p.stock??0)>0;
- const galCart=document.getElementById('emGalCart');
- galCart.disabled=!galleryAvailable;
- galCart.style.opacity=galCart.disabled?'.5':'1';
- galCart.onclick=()=>{
-   if(galCart.disabled)return;
-   if(!gallerySelectable.length){
-     emAddCart(p.id,[]);
-     return;
+ const desc=document.getElementById('emGalDescription');
+ const priceBox=document.getElementById('emGalPrice');
+ const optionsBox=document.getElementById('emGalOptions');
+ const fav=document.getElementById('emGalFav');
+ const add=document.getElementById('emGalCart');
+ title.textContent=p.name||'Producto';
+ main.src=mainImg;
+ main.alt=p.name||'Producto';
+ const galleryImgs=[mainImg,...imgs.filter(u=>u&&u!==mainImg)].slice(0,20);
+ thumbs.innerHTML=galleryImgs.map((u,i)=>'<button type="button" class="em-product-thumb'+(i===0?' active':'')+'"><img src="'+escapeHtml(u)+'" alt=""></button>').join('');
+ thumbs.querySelectorAll('.em-product-thumb').forEach((b,i)=>b.onclick=()=>{main.src=galleryImgs[i];thumbs.querySelectorAll('.em-product-thumb').forEach(x=>x.classList.remove('active'));b.classList.add('active');});
+ const current=emFinal(p), previous=Number(p.compare_at_price||0), sale=p.disc>0||previous>current;
+ priceBox.innerHTML='<span style="color:'+(sale?'#800020':'#111')+';font-weight:800;font-size:28px">'+emMoney(current)+'</span>'+(previous>current?'<del style="margin-left:9px;color:#111;font-size:15px">'+emMoney(previous)+'</del>':'')+(sale?'<small style="margin-left:8px;color:#800020;font-weight:700;font-size:11px">'+(p.disc>0?'-'+p.disc+'%':'Descuento')+'</small>':'');
+ desc.innerHTML=p.description?escapeHtml(String(p.description)).replace(/\n/g,'<br>'):'Sin descripción disponible.';
+ const groups=emProductOptionGroups(p);
+ const selectable=[['Talla','size',groups.sizes],['Medida','measure',groups.measures],['Color','color',groups.colors]].filter(x=>x[2].length);
+ optionsBox.innerHTML=selectable.map(([label,type,arr])=>'<div class="em-modal-option-group" data-option-group="'+type+'"><b>'+label+'</b><div class="em-modal-options">'+arr.map(o=>'<button type="button" class="em-modal-option '+(emOptionHasStock(o)?'':'disabled')+'" data-option-type="'+type+'" data-option-value="'+escapeHtml(String(o.value||''))+'" '+(emOptionHasStock(o)?'':'disabled')+'>'+escapeHtml(String(o.value||''))+(emOptionHasStock(o)?'':' · AGOTADO')+'</button>').join('')+'</div></div>').join('');
+ optionsBox.querySelectorAll('.em-modal-option:not(.disabled)').forEach(btn=>btn.onclick=()=>{const group=btn.closest('.em-modal-option-group');group.querySelectorAll('.em-modal-option').forEach(x=>x.classList.remove('selected'));btn.classList.add('selected');});
+ fav.textContent=isFavorite(p.id)?'♥ En favoritos':'♡ Agregar a favoritos';
+ fav.classList.toggle('active',isFavorite(p.id));
+ fav.onclick=()=>{toggleFavorite(p.id);fav.textContent=isFavorite(p.id)?'♥ En favoritos':'♡ Agregar a favoritos';fav.classList.toggle('active',isFavorite(p.id));};
+ const hasSelectable=selectable.length>0;
+ const available=hasSelectable?selectable.every(x=>x[2].some(emOptionHasStock)):Number(p.stock??0)>0;
+ add.disabled=!available;add.style.opacity=available?'1':'.5';
+ add.onclick=()=>{
+   if(add.disabled)return;
+   const selected=[];
+   for(const [label,type,arr] of selectable){
+     const chosen=optionsBox.querySelector('.em-modal-option[data-option-type="'+type+'"].selected');
+     if(!chosen){emClientAlert('Selecciona '+label.toLowerCase()+' antes de agregar al carrito.');return;}
+     const option=arr.find(o=>String(o.value)===String(chosen.dataset.optionValue));
+     if(!option||!emOptionHasStock(option)){emClientAlert('La opción seleccionada ya no está disponible.');return;}
+     selected.push({type,value:chosen.dataset.optionValue});
    }
-   emClientAlert('Selecciona talla, medida o color desde la tarjeta del producto antes de agregarlo al carrito.');
+   emAddCart(p.id,selected);
  };
+ modal.classList.add('open');
 }
+function emCloseProductGallery(fromPopState){
+ const modal=document.getElementById('emPublicGallery');
+ if(!modal)return;
+ if(window.__elamodaProductModalHistory && !fromPopState){
+   window.__elamodaProductModalHistory=false;
+   try{history.back();return;}catch(e){}
+ }
+ modal.classList.remove('open');
+ modal.remove();
+ document.body.classList.remove('elamoda-product-modal-open');
+ window.__elamodaProductModalHistory=false;
+}
+window.addEventListener('popstate',function(e){
+ const modal=document.getElementById('emPublicGallery');
+ if(modal){emCloseProductGallery(true);return;}
+});
+
+/* El marco completo del producto abre el detalle; los controles internos conservan su función. */
+document.addEventListener('click',function(e){
+ const card=e.target.closest?.('.card');
+ if(!card || !document.body.contains(card))return;
+ if(e.target.closest('button,a,input,select,textarea,summary,.em-public-option,.desc-toggle,.em-product-details'))return;
+ const id=card.querySelector('.add-btn')?.dataset?.productId;
+ if(id)emOpenProductGallery(id);
+},true);
 
 function emRenderPublicProductCard(p){
  const g=emProductOptionGroups(p);
@@ -2405,6 +2473,18 @@ function emApplyAgotadoBadge(){
 })();
 </script>
 
+<style id="em-product-modal-styles">
+.em-product-modal{position:fixed;inset:0;z-index:199900;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(0,0,0,.62);overscroll-behavior:none;touch-action:none}
+.em-product-modal.open{display:flex}
+.em-product-modal-card{width:min(1040px,96vw);max-height:94dvh;overflow:auto;background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.3);touch-action:pan-y;overscroll-behavior:contain}
+.em-product-modal-head{position:sticky;top:0;z-index:4;background:#fff;border-bottom:1px solid #eee;padding:13px 16px;display:flex;align-items:center;justify-content:space-between}
+.em-product-modal-label{font:600 18px Georgia,serif;color:#222}.em-product-modal-close{width:38px;height:38px;border:0;border-radius:50%;background:#f2f2f2;font-size:25px;cursor:pointer}
+.em-product-modal-body{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:24px;padding:20px}.em-product-modal-media{min-width:0}.em-product-modal-media>img{display:block;width:100%;max-height:62dvh;object-fit:contain;border-radius:12px;background:#f8f3f4}.em-product-thumbs{display:flex;gap:8px;overflow:auto;margin-top:10px;padding-bottom:3px;touch-action:pan-x}
+.em-product-thumb{flex:0 0 70px;width:70px;height:70px;padding:0;border:2px solid #ddd;background:#fff;border-radius:8px;overflow:hidden;cursor:pointer}.em-product-thumb.active{border-color:#800020}.em-product-thumb img{width:100%;height:100%;object-fit:cover}
+.em-product-modal-info{display:flex;flex-direction:column;min-width:0}.em-product-modal-info h2{font:400 30px Georgia,serif;margin:4px 0 8px}.em-product-modal-price{margin-bottom:15px}.em-product-modal-description{font-size:14px;line-height:1.65;color:#555;margin-bottom:15px;white-space:normal}.em-modal-option-group{border-top:1px solid #eee;padding:13px 0}.em-modal-options{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.em-modal-option{border:1px solid #ddd;background:#fff;border-radius:7px;padding:8px 11px;cursor:pointer;font-size:13px}.em-modal-option.selected{background:#111;color:#fff;border-color:#111;font-weight:700}.em-modal-option.disabled{background:#f4f4f4;color:#999;text-decoration:line-through;cursor:not-allowed}.em-product-modal-fav{border:1px solid #ddd;background:#fff;border-radius:8px;padding:11px;margin-top:auto;cursor:pointer;font-weight:700}.em-product-modal-fav.active{color:#800020;border-color:#800020}.em-product-modal-cart{width:100%;margin-top:9px;padding:13px}
+body.elamoda-product-modal-open{overflow:hidden;overscroll-behavior:none}
+@media(max-width:760px){.em-product-modal{padding:0;align-items:stretch}.em-product-modal-card{width:100%;max-width:none;max-height:100dvh;border-radius:0}.em-product-modal-body{grid-template-columns:1fr;gap:14px;padding:12px}.em-product-modal-media>img{max-height:46dvh}.em-product-modal-info h2{font-size:25px}.em-product-modal-fav{margin-top:4px}.em-product-modal-head{padding:10px 12px}}
+</style>
 <style id="em-client-dialog-styles">
 .em-client-dialog{position:fixed;inset:0;z-index:200000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.52)}
 .em-client-dialog.show{display:flex}
