@@ -18,6 +18,7 @@ footer{border-top:1px solid var(--line);background:#fff;padding:40px 5%;display:
 
 .add-btn{width:100%;margin-top:10px;border:0;background:#111;color:#fff;border-radius:6px;padding:10px 8px;font-size:12px;cursor:pointer}
 .cart-drawer{position:fixed;right:-390px;top:0;width:370px;max-width:92vw;height:100vh;background:#fff;z-index:1000;box-shadow:-8px 0 30px #0002;transition:right .25s ease;display:flex;flex-direction:column}
+body.elamoda-cart-open{overflow:hidden;overscroll-behavior:none;touch-action:none}.cart-drawer{overscroll-behavior:contain;touch-action:pan-y}.cart-items{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.cart-item{grid-template-columns:58px 1fr auto;align-items:center}.cart-thumb{width:58px;height:70px;border-radius:7px;overflow:hidden;background:#f7f1f2;display:flex;align-items:center;justify-content:center}.cart-thumb img{width:100%;height:100%;object-fit:cover;display:block}.cart-thumb span{font-size:10px;color:#999;text-align:center;padding:4px}
 .cart-drawer.open{right:0}.cart-head{display:flex;justify-content:space-between;align-items:center;padding:18px;border-bottom:1px solid var(--line)}
 .cart-head h3{margin:0;font:400 25px Georgia,serif}.cart-close{border:0;background:none;font-size:28px;cursor:pointer}
 .cart-items{padding:15px;overflow:auto;flex:1}.cart-item{display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px 0;border-bottom:1px solid var(--line)}
@@ -220,7 +221,7 @@ function money(n){return "$"+n.toLocaleString("es-MX",{minimumFractionDigits:2,m
 function addToCart(btn){
   const name=btn.dataset.name, price=parseFloat(btn.dataset.price);
   const item=cart.find(x=>x.name===name);
-  if(item)item.qty++; else cart.push({name,price,qty:1});
+  if(item)item.qty++; else cart.push({name,price,qty:1,image:btn.dataset.image||''});
   renderCart();
   emBumpCart();
   emSparklesFrom(btn,7,['✦','✧','✦','✧']);
@@ -261,12 +262,12 @@ function emRenderDeliverySelectors(){emNormalizeDeliveryDefaults();const box=doc
  else if(type==='metro'||type==='metrobus'){const list=(EM.delivery?.[type]||[]).filter(x=>x.enabled!==false);box.innerHTML='<select id="emDeliveryLine" onchange="emRenderDeliveryStations()" style="width:100%;padding:9px;border:1px solid #ddd;border-radius:6px;margin-bottom:7px"><option value="">Selecciona una línea</option>'+list.map(x=>'<option value="'+escapeHtml(x.name)+'">'+escapeHtml(x.name)+'</option>').join('')+'</select><div id="emDeliveryStationBox"></div>';}
  else box.innerHTML=''; emUpdateDeliverySummary();}
 function emRenderDeliveryStations(){const type=document.getElementById('emDeliveryType')?.value,line=document.getElementById('emDeliveryLine')?.value,box=document.getElementById('emDeliveryStationBox');if(!box)return;const L=(EM.delivery?.[type]||[]).find(x=>x.name===line),stations=(L?.stations||[]).filter(x=>x.enabled!==false);box.innerHTML='<select id="emDeliveryStation" onchange="emUpdateDeliverySummary()" style="width:100%;padding:9px;border:1px solid #ddd;border-radius:6px"><option value="">Selecciona una estación</option>'+stations.map(x=>'<option value="'+escapeHtml(x.name)+'">'+escapeHtml(x.name)+'</option>').join('')+'</select>';emUpdateDeliverySummary();}
-function emUpdateDeliverySummary(){const d=emGetDelivery(),el=document.getElementById('emDeliverySummary');if(!el)return;if(!d){el.textContent='Selecciona línea y estación para calcular la entrega.';renderCartTotals();return;}const day=new Date().getDay(),schedule=(day===0||day===6)?(EM.delivery?.weekend||''):(EM.delivery?.weekday||'');el.innerHTML='<b>'+escapeHtml(d.type==='address'?'Otra ubicación':d.label+' · '+d.line+' · '+d.station)+'</b><br><span style="color:#777">Revisa los horarios disponibles al momento de hacer tu pedido.</span><br>Costo de entrega: <b>'+emMoney(d.cost)+'</b>';renderCartTotals();}
+function emUpdateDeliverySummary(){const d=emGetDelivery(),el=document.getElementById('emDeliverySummary');if(!el)return;if(!d){el.textContent='Selecciona línea y estación para calcular la entrega.';renderCartTotals();return;}const day=new Date().getDay(),schedule=(day===0||day===6)?(EM.delivery?.weekend||''):(EM.delivery?.weekday||'');el.innerHTML='<b>'+escapeHtml(d.type==='address'?'Otra ubicación':d.label+' · '+d.line+' · '+d.station)+'</b><br><span style="color:#777">Los horarios establecidos pueden variar según tu ubicación. Revisa los horarios disponibles al momento de hacer tu pedido.</span><br>Costo de entrega: <b>'+emMoney(d.cost)+'</b>';renderCartTotals();}
 function renderCartTotals(){const subtotal=cart.reduce((s,x)=>s+x.price*x.qty,0),d=emGetDelivery(),delivery=d?Number(d.cost||0):0,total=subtotal+delivery;const a=document.getElementById('cartSubtotal'),b=document.getElementById('cartDeliveryCost'),c=document.getElementById('cartTotal');if(a)a.textContent=money(subtotal);if(b)b.textContent=money(delivery);if(c)c.textContent=money(total);}
 function emUpdateCartTermsLink(){const a=document.getElementById('emCartTermsLink');if(!a)return;const u=String(EM.config.termsUrl||'').trim();a.href=u&&u!=='#'?u:'#terminos';a.onclick=function(e){if(!u||u==='#'){e.preventDefault();const el=document.getElementById('terminos')||document.querySelector('[id*=terms]');if(el)el.scrollIntoView({behavior:'smooth'});}};}
-function renderCart(){const box=document.getElementById('cartItems'),badge=document.getElementById('cartBadge');let count=0;if(!cart.length)box.innerHTML='<p style="color:#777;font-size:13px">Aún no has agregado productos.</p>';else box.innerHTML=cart.map(x=>{count+=x.qty;return `<div class="cart-item"><div><b>${escapeHtml(x.name)}</b><small>${money(x.price)} c/u</small><div class="qty"><button onclick="changeQty('${String(x.name).replace(/'/g,"\\'")}',-1)">−</button><span>${x.qty}</span><button onclick="changeQty('${String(x.name).replace(/'/g,"\\'")}',1)">+</button></div></div><b>${money(x.price*x.qty)}</b></div>`}).join('');badge.textContent=count;emRenderDeliverySelectors();renderCartTotals();emUpdateCartTermsLink();}
-function openCart(){document.getElementById("cartDrawer").classList.add("open");document.getElementById("overlay").classList.add("show");renderCart();}
-function closeCart(){document.getElementById("cartDrawer").classList.remove("open");document.getElementById("overlay").classList.remove("show");}
+function renderCart(){const box=document.getElementById('cartItems'),badge=document.getElementById('cartBadge');let count=0;if(!cart.length)box.innerHTML='<p style="color:#777;font-size:13px">Aún no has agregado productos.</p>';else box.innerHTML=cart.map(x=>{count+=x.qty;const safeName=String(x.name).replace(/'/g,"\\'");const thumb=x.image?'<img src="'+escapeHtml(x.image)+'" alt="" loading="lazy">':'<span>Sin imagen</span>';return `<div class="cart-item"><div class="cart-thumb">${thumb}</div><div><b>${escapeHtml(x.name)}</b><small>${money(x.price)} c/u</small><div class="qty"><button onclick="changeQty('${safeName}',-1)">−</button><span>${x.qty}</span><button onclick="changeQty('${safeName}',1)">+</button></div></div><b>${money(x.price*x.qty)}</b></div>`}).join('');badge.textContent=count;emRenderDeliverySelectors();renderCartTotals();emUpdateCartTermsLink();}
+function openCart(){document.getElementById("cartDrawer").classList.add("open");document.getElementById("overlay").classList.add("show");document.body.classList.add("elamoda-cart-open");renderCart();}
+function closeCart(){document.getElementById("cartDrawer").classList.remove("open");document.getElementById("overlay").classList.remove("show");document.body.classList.remove("elamoda-cart-open");}
 function sendWhatsAppOrder(){ emWhatsApp(); }</script>
 
 <style>
@@ -1642,7 +1643,7 @@ async function emAddCart(productId,selectedOptions=[]){
  const cartName=p.name+selectedLabel;
  const price=Number(emFinal(p));
  const x=cart.find(c=>c.name===cartName);
- if(x)x.qty++; else cart.push({id:p.id,code:p.code||'',name:cartName,price,qty:1,selectedOptions});
+ if(x){x.qty++;if(!x.image)x.image=p.image||p.mainImage||p.images?.[0]||'';} else cart.push({id:p.id,code:p.code||'',name:cartName,price,qty:1,selectedOptions,image:p.image||p.mainImage||p.images?.[0]||''});
  localStorage.setItem('elamoda_cart',JSON.stringify(cart));
  renderCart();
  emBumpCart();
