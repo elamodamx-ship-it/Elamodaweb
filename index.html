@@ -16,6 +16,7 @@ footer{border-top:1px solid var(--line);background:#fff;padding:40px 5%;display:
 @media(max-width:900px){.head{grid-template-columns:1fr auto;gap:10px;padding:8px 12px}.logo{width:245px;height:82px}.search{grid-column:1/-1;grid-row:2;height:42px;font-size:13px}.actions{gap:14px}.action{font-size:22px}.action small{font-size:9px}.nav{height:48px;overflow-x:auto;white-space:nowrap;padding:0 15px;gap:24px;font-size:12px}.nav .active{height:48px}.whatsapp{display:none}.hero{padding:0 10px;margin-top:10px}.hero-box{height:260px}.hero-copy{padding-left:25px;padding-right:42%}.eyebrow{font-size:9px;letter-spacing:2px}.hero h1{font-size:34px;margin:9px 0 14px}.hero-btn{padding:10px 14px;font-size:11px}.hero-model{right:-7%;width:50%;height:100%}.arrow{width:34px;height:34px;font-size:20px}.left{left:7px}.right{right:7px}.categories{overflow-x:auto;justify-content:flex-start;scrollbar-width:none;padding:0 12px;gap:13px;margin:15px auto 25px}.categories::-webkit-scrollbar{display:none}.category{flex-basis:80px}.cat-img{width:68px;height:68px}.category span{font-size:11px}.section{padding:0 12px 28px}.section-title h2{font-size:22px}.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.photo{height:auto;aspect-ratio:1.2/1}.info{padding:8px}.name{font-size:12px}.price-row{gap:6px;margin-top:6px}.real{font-size:17px}.discount{font-size:11px}.old{font-size:10px}footer{grid-template-columns:1fr 1fr;padding:30px 18px;gap:20px}.footer-logo{font-size:35px}.copy{grid-column:1/-1}}@media(max-width:420px){.logo{width:215px}.hero h1{font-size:30px}footer{grid-template-columns:1fr}}
 
 
+.em-special-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:24px;margin:0 0 7px}.em-featured-badge{display:inline-flex;align-items:center;justify-content:center;margin:0 0 0 auto;color:#111;font-size:17px;line-height:1;width:24px;height:24px;border-radius:50%;background:#fff;border:1px solid #ddd;box-shadow:0 1px 5px #0001;vertical-align:middle;flex:0 0 24px}.em-florela-badge{display:block;margin:0;color:#800020;font-size:10px;font-weight:800;letter-spacing:.25px;text-transform:uppercase}.em-product-badge~.em-product-badge{ }
 .add-btn{width:100%;margin-top:10px;border:0;background:#111;color:#fff;border-radius:6px;padding:10px 8px;font-size:12px;cursor:pointer}
 .cart-drawer{position:fixed;right:-390px;top:0;width:370px;max-width:92vw;height:100vh;height:100dvh;background:#fff;z-index:1000;box-shadow:-8px 0 30px #0002;transition:right .25s ease;display:flex;flex-direction:column}
 body.elamoda-cart-open{overflow:hidden;overscroll-behavior:none}html.elamoda-cart-open{overflow:hidden}.cart-drawer{overscroll-behavior:contain;touch-action:pan-y;overflow-x:hidden;overflow-y:auto;min-height:0}.cart-head{position:sticky;top:0;z-index:3;background:#fff}.cart-items{overscroll-behavior:contain;touch-action:pan-y;overflow:visible;flex:none;min-height:auto}.cart-foot{flex-shrink:0;max-height:none;overflow:visible;overscroll-behavior:contain;touch-action:pan-y}.cart-item{grid-template-columns:58px 1fr auto;align-items:center}.cart-thumb{width:58px;height:70px;border-radius:7px;overflow:hidden;background:#f7f1f2;display:flex;align-items:center;justify-content:center}.cart-thumb img{width:100%;height:100%;object-fit:cover;display:block}.cart-thumb span{font-size:10px;color:#999;text-align:center;padding:4px}
@@ -339,6 +340,7 @@ function sendWhatsAppOrder(){ emWhatsApp(); }</script>
 <section id="emConfig" class="emPanel" style="display:none"><h2 style="font:400 25px Georgia,serif;margin:0 0 15px">Configuración</h2>
    <div class="emConfigGrid">
     <div class="emField"><label>WhatsApp</label><input id="emWa" inputmode="numeric" placeholder="5215512345678"></div>
+    <div class="emField"><label>Garantía para agendar pedido</label><input id="emGuarantee" type="number" min="0" step="1" placeholder="20"><div style="font-size:11px;color:#777;margin-top:5px">Monto en MXN que se solicita como garantía y se descuenta del total de la compra.</div></div>
     <div class="emField"><label>Correo electrónico</label><input id="emMail" type="email" placeholder="ventas@elamoda.com"></div>
     <div class="emField"><label>Horario de atención</label><input id="emHours" placeholder="Lun–Sáb · 10:00–19:00"></div>
     <div class="emField"><label>Enlace del horario</label><input id="emHoursUrl" placeholder="https://..."></div><div class="emField" style="grid-column:1/-1"><label>Mensaje automático de WhatsApp</label><textarea id="emWaMessage" rows="6" placeholder="Hola, Elamoda. Quiero realizar este pedido:&#10;&#10;{{PRODUCTOS}}&#10;&#10;Total: {{TOTAL}} MXN&#10;&#10;Quedo atento(a) para confirmar disponibilidad, pago y entrega."></textarea><div style="font-size:11px;color:#777;margin-top:5px">Usa <b>{{PRODUCTOS}}</b> para insertar los artículos y <b>{{TOTAL}}</b> para insertar el total.</div></div>
@@ -416,7 +418,7 @@ let EM={
   {name:'Gloss Hidratante Rosa',cat:'Maquillaje',price:149,disc:20,status:'Agotado'},
   {name:'Lentes Urbanos',cat:'Accesorios',price:249,disc:5,status:'Disponible'}
  ],
- config:{storeName:'Elamoda',wa:'5215512345678',mail:'',hours:'Horario de atención',hoursUrl:'',termsUrl:'',whatsappMessage:'Hola, Elamoda. Quiero realizar este pedido:\n\n{{PRODUCTOS}}\n\nTotal: {{TOTAL}} MXN\n\nQuedo atento(a) para confirmar disponibilidad, pago y entrega.',ig:'',fb:'',tk:'',slogan:'Tu estilo, a tu manera.'}, links:[{label:'Inicio',url:'#',visible:true},{label:'Categorías',url:'#',visible:true},{label:'Novedades',url:'#',visible:true},{label:'Ofertas',url:'#',visible:false},{label:'Contacto',url:'#',visible:true}], content:{bannerDesk:'',bannerMob:'',bannerSlides:[],videoUrl:'',featuredTitle:'',featuredText:'',featuredItems:[],popup:{enabled:false,image:'',title:'',text:'',buttonText:'',buttonUrl:'',startDate:'',endDate:''},footerLinks:[
+ config:{storeName:'Elamoda',wa:'5215512345678',mail:'',hours:'Horario de atención',hoursUrl:'',termsUrl:'',whatsappMessage:'Hola, Elamoda. Quiero realizar este pedido:\n\n{{PRODUCTOS}}\n\nTotal: {{TOTAL}} MXN\n\nQuedo atento(a) para confirmar disponibilidad, pago y entrega.',ig:'',fb:'',tk:'',slogan:'Tu estilo, a tu manera.',guarantee:20}, links:[{label:'Inicio',url:'#',visible:true},{label:'Categorías',url:'#',visible:true},{label:'Novedades',url:'#',visible:true},{label:'Ofertas',url:'#',visible:false},{label:'Contacto',url:'#',visible:true}], content:{bannerDesk:'',bannerMob:'',bannerSlides:[],videoUrl:'',featuredTitle:'',featuredText:'',featuredItems:[],popup:{enabled:false,image:'',title:'',text:'',buttonText:'',buttonUrl:'',startDate:'',endDate:''},footerLinks:[
   {label:'Términos y condiciones',url:'#',visible:true,text:''},
   {label:'Cambios y devoluciones',url:'#',visible:true,text:''},
   {label:'Envíos',url:'#',visible:true,text:''},
@@ -432,10 +434,10 @@ async function emLoadSettings(){
  const {data,error}=await elamodaSB.from('store_settings').select('key,value');
  if(error)throw error;
  const byKey=Object.fromEntries((data||[]).map(x=>[x.key,x.value||{}]));
- const store=byKey.store||{}; const social=byKey.social||{}; const appearance=byKey.appearance||{}; EM.content=byKey.content||EM.content||{bannerDesk:'',bannerMob:'',bannerSlides:[],videoUrl:'',featuredTitle:'',featuredText:'',featuredItems:[],popup:{enabled:false,image:'',title:'',text:'',buttonText:'',buttonUrl:'',startDate:'',endDate:''},footerLinks:[]};
+ const store=byKey.store||{}; const social=byKey.social||{}; const appearance=byKey.appearance||{}; const orderConfig=byKey.order_config||{}; EM.productFlags=Object.assign({collaborationFlorelaIds:[]},byKey.product_flags||{}); EM.content=byKey.content||EM.content||{bannerDesk:'',bannerMob:'',bannerSlides:[],videoUrl:'',featuredTitle:'',featuredText:'',featuredItems:[],popup:{enabled:false,image:'',title:'',text:'',buttonText:'',buttonUrl:'',startDate:'',endDate:''},footerLinks:[]};
  EM.content.popup=Object.assign({enabled:false,image:'',title:'',text:'',buttonText:'',buttonUrl:'',startDate:'',endDate:''},EM.content.popup||{});
  EM.delivery=Object.assign({enabled:true,weekday:'Lunes a viernes · 17:00–20:00',weekend:'Sábado y domingo · 11:00–20:00',defaultCost:0,addressEnabled:true,addressCost:0,metro:[],metrobus:[]},byKey.delivery||EM.delivery||{});
- EM.config={storeName:String(store.name||EM.config.storeName||'Elamoda'),wa:String(store.whatsapp||EM.config.wa||''),mail:String(store.email||EM.config.mail||''),hours:String(store.hours||EM.config.hours||'Horario de atención'),hoursUrl:String(store.hours_url||EM.config.hoursUrl||''),termsUrl:String(store.terms_url||EM.config.termsUrl||''),whatsappMessage:String(store.whatsapp_message||EM.config.whatsappMessage||''),ig:String(social.instagram||EM.config.ig||''),fb:String(social.facebook||EM.config.fb||''),tk:String(social.tiktok||EM.config.tk||''),slogan:String(store.slogan||EM.config.slogan||'Tu estilo, a tu manera.')};
+ EM.config={storeName:String(store.name||EM.config.storeName||'Elamoda'),wa:String(store.whatsapp||EM.config.wa||''),mail:String(store.email||EM.config.mail||''),hours:String(store.hours||EM.config.hours||'Horario de atención'),hoursUrl:String(store.hours_url||EM.config.hoursUrl||''),termsUrl:String(store.terms_url||EM.config.termsUrl||''),whatsappMessage:String(store.whatsapp_message||EM.config.whatsappMessage||''),ig:String(social.instagram||EM.config.ig||''),fb:String(social.facebook||EM.config.fb||''),tk:String(social.tiktok||EM.config.tk||''),slogan:String(store.slogan||EM.config.slogan||'Tu estilo, a tu manera.'),guarantee:Math.max(0,Number(orderConfig.guarantee ?? EM.config.guarantee ?? 20)||0)};
  EM.visibility=Object.assign({inicio:true,categorias:true,novedades:true,ofertas:false,contacto:true,redes:true,banner:true},appearance.visibility||{});
  if(typeof appearance.banner_enabled==='boolean') EM.visibility.banner=appearance.banner_enabled;
  const {data:links,error:linksError}=await elamodaSB.from('navigation_links').select('*').order('sort_order');
@@ -737,7 +739,7 @@ async function emLoadRemote(){
  ]);
  if(cr.error)throw cr.error; if(pr.error)throw pr.error;
  EM.categories=(cr.data||[]).map(c=>({id:c.id,name:c.name,slug:c.slug,icon:c.icon||'◯',image_url:c.image_url||'',visible:c.visible,sort_order:c.sort_order}));
- EM.products=(pr.data||[]).map(p=>{const imgs=(p.product_images||[]).filter(x=>x.visible!==false).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).slice(0,20).map(x=>x.url);return {id:p.id,name:p.name,cat:p.categories?.name||'',category_id:p.category_id,price:Number(p.price),disc:Number(p.discount_percent||0),status:(p.visible===false?'Oculto':(Number(p.stock||0)>0||((p.product_options||[]).some(o=>o.visible!==false&&Number(o.stock||0)>0))?'Disponible':'Agotado')),visible:p.visible!==false,stock:Number(p.stock||0),stock_min:Number(p.stock_min||0),slug:p.slug,description:p.description||'',compare_at_price:Number(p.compare_at_price||0)||null,images:imgs,image_url:imgs[0]||'',product_options:Array.isArray(p.product_options)?p.product_options:[]};});
+ EM.products=(pr.data||[]).map(p=>{const imgs=(p.product_images||[]).filter(x=>x.visible!==false).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).slice(0,20).map(x=>x.url);return {id:p.id,name:p.name,cat:p.categories?.name||'',category_id:p.category_id,price:Number(p.price),disc:Number(p.discount_percent||0),status:(p.visible===false?'Oculto':(Number(p.stock||0)>0||((p.product_options||[]).some(o=>o.visible!==false&&Number(o.stock||0)>0))?'Disponible':'Agotado')),visible:p.visible!==false,stock:Number(p.stock||0),stock_min:Number(p.stock_min||0),slug:p.slug,description:p.description||'',compare_at_price:Number(p.compare_at_price||0)||null,featured:p.featured===true,images:imgs,image_url:imgs[0]||'',product_options:Array.isArray(p.product_options)?p.product_options:[]};});
  emEnsureProductCodes(); emEnsureDefaults(); emSave();
 }
 function emEnsureProductCodes(){
@@ -962,6 +964,7 @@ function emEnsureProductEditModal(){
  '<label style="display:block;font-size:12px;font-weight:700;margin:9px 0">Precio anterior<input id="emEditPreviousPrice" type="number" min="0" step="0.01" placeholder="Ej. 699.00" style="display:block;width:100%;box-sizing:border-box;padding:10px;margin-top:5px;border:1px solid #ccc;border-radius:6px"><span style="display:block;font-size:10px;color:#777;margin-top:4px">Opcional. Se mostrará tachado cuando sea mayor que el precio actual.</span></label>'+
  '<label style="display:block;font-size:12px;font-weight:700;margin:9px 0">Descuento<select id="emEditDiscount" style="display:block;width:100%;padding:10px;margin-top:5px;border:1px solid #ccc;border-radius:6px;background:#fff">'+
  '<option value="0">Sin descuento</option><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option></select></label>'+
+ '<div style="margin-top:12px;border:1px solid #eee;border-radius:9px;padding:12px;background:#fff9fb"><div style="font-size:12px;font-weight:700;margin-bottom:9px">✨ Apariencia especial</div><label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;margin:8px 0;cursor:pointer"><input id="emEditFeatured" type="checkbox" style="width:17px;height:17px"> Producto destacado <span style="font-size:10px;color:#777;font-weight:400">(aparece primero en el catálogo)</span></label><label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;margin:8px 0;cursor:pointer"><input id="emEditCollaboration" type="checkbox" style="width:17px;height:17px"> Colaboración con FlorEla <span style="font-size:10px;color:#777;font-weight:400">(muestra una etiqueta especial)</span></label></div>'+
  '<label style="display:block;font-size:12px;font-weight:700;margin:9px 0">Descripción<textarea id="emEditDescription" style="display:block;width:100%;box-sizing:border-box;min-height:120px;padding:10px;margin-top:5px;border:1px solid #ccc;border-radius:6px;resize:vertical"></textarea></label>'+
  '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:15px"><button onclick="emCloseProductEdit()" style="border:1px solid #ddd;background:#fff;padding:10px 14px;border-radius:6px">Cancelar</button><button onclick="emSaveProductEdit()" class="emBtn">Guardar cambios</button></div>'+
  '</div>';
@@ -975,6 +978,8 @@ async function emEditProduct(i){
  document.getElementById('emEditName').value=p.name||'';
  document.getElementById('emEditPrice').value=Number(p.price??0);
  document.getElementById('emEditPreviousPrice').value=(p.compare_at_price!=null && Number(p.compare_at_price)>0)?Number(p.compare_at_price):'';
+ document.getElementById('emEditFeatured').checked=p.featured===true;
+ document.getElementById('emEditCollaboration').checked=Array.isArray(EM.productFlags?.collaborationFlorelaIds)&&EM.productFlags.collaborationFlorelaIds.some(x=>String(x)===String(p.id));
  document.getElementById('emEditDescription').value=p.description||'';
  const cat=document.getElementById('emEditCat');
  cat.innerHTML=EM.categories.map(c=>'<option value="'+String(c.id).replace(/"/g,'&quot;')+'">'+escapeHtml(c.name)+'</option>').join('');
@@ -995,12 +1000,19 @@ async function emSaveProductEdit(){
  const previous_price_raw=document.getElementById('emEditPreviousPrice').value.trim();
  const compare_at_price=previous_price_raw===''?null:Number(previous_price_raw);
  const description=document.getElementById('emEditDescription').value;
+ const featured=document.getElementById('emEditFeatured').checked;
+ const collaboration=document.getElementById('emEditCollaboration').checked;
  const category_id=document.getElementById('emEditCat').value||null;
  if(!name||!Number.isFinite(price)||price<0||!Number.isFinite(discount_percent)||discount_percent<0||discount_percent>100|| (previous_price_raw!=='' && (!Number.isFinite(compare_at_price)||compare_at_price<0))){emClientAlert('Revisa nombre, precios y descuento.');return;}
  if(compare_at_price!==null && compare_at_price<=price){emClientAlert('El precio anterior debe ser mayor que el precio actual para mostrar una rebaja.');return;}
  try{
-   const {error}=await elamodaSB.from('products').update({name,category_id,price,discount_percent,compare_at_price,description,updated_at:new Date().toISOString()}).eq('id',p.id);
+   const {error}=await elamodaSB.from('products').update({name,category_id,price,discount_percent,compare_at_price,description,featured,updated_at:new Date().toISOString()}).eq('id',p.id);
    if(error)throw error;
+   if(!EM.productFlags)EM.productFlags={collaborationFlorelaIds:[]};
+   let ids=Array.isArray(EM.productFlags.collaborationFlorelaIds)?EM.productFlags.collaborationFlorelaIds.map(String):[];
+   ids=ids.filter(x=>x!==String(p.id)); if(collaboration)ids.push(String(p.id));
+   EM.productFlags.collaborationFlorelaIds=[...new Set(ids)];
+   await emSaveSetting('product_flags',EM.productFlags);
    emCloseProductEdit();
    await emLoadRemote(); emRenderAll(); await emApplyStore();
    emClientAlert('Producto actualizado correctamente.');
@@ -1078,7 +1090,7 @@ async function emSaveNewProduct(){
 
 async function emLoadConfig(){
  emEnsureDefaults();
- document.getElementById('emWa').value=EM.config.wa||'';document.getElementById('emMail').value=EM.config.mail||'';document.getElementById('emHours').value=EM.config.hours||'';document.getElementById('emHoursUrl').value=EM.config.hoursUrl||'';document.getElementById('emTermsUrl').value=EM.config.termsUrl||'';document.getElementById('emWaMessage').value=EM.config.whatsappMessage||'';document.getElementById('emIg').value=EM.config.ig||'';document.getElementById('emFb').value=EM.config.fb||'';document.getElementById('emTk').value=EM.config.tk||'';
+ document.getElementById('emWa').value=EM.config.wa||'';document.getElementById('emGuarantee').value=Number(EM.config.guarantee??20);document.getElementById('emMail').value=EM.config.mail||'';document.getElementById('emHours').value=EM.config.hours||'';document.getElementById('emHoursUrl').value=EM.config.hoursUrl||'';document.getElementById('emTermsUrl').value=EM.config.termsUrl||'';document.getElementById('emWaMessage').value=EM.config.whatsappMessage||'';document.getElementById('emIg').value=EM.config.ig||'';document.getElementById('emFb').value=EM.config.fb||'';document.getElementById('emTk').value=EM.config.tk||'';
 }
 function emNormalizeSocialUrl(value,platform){
  let v=String(value||'').trim();
@@ -1091,9 +1103,9 @@ function emNormalizeSocialUrl(value,platform){
  return v;
 }
 async function emSaveConfig(){
- const config={storeName:EM.config.storeName||'Elamoda',wa:(document.getElementById('emWa').value||'').replace(/\D/g,''),mail:(document.getElementById('emMail').value||'').trim(),hours:(document.getElementById('emHours').value||'').trim()||'Horario de atención',hoursUrl:(document.getElementById('emHoursUrl').value||'').trim(),termsUrl:(document.getElementById('emTermsUrl').value||'').trim(),whatsappMessage:(document.getElementById('emWaMessage').value||'').trim()||'Hola, Elamoda. Quiero realizar este pedido:\n\n{{PRODUCTOS}}\n\nTotal: {{TOTAL}} MXN\n\nQuedo atento(a) para confirmar disponibilidad, pago y entrega.',ig:emNormalizeSocialUrl(document.getElementById('emIg').value,'instagram'),fb:emNormalizeSocialUrl(document.getElementById('emFb').value,'facebook'),tk:emNormalizeSocialUrl(document.getElementById('emTk').value,'tiktok'),slogan:EM.config.slogan||'Tu estilo, a tu manera.'};
+ const config={storeName:EM.config.storeName||'Elamoda',wa:(document.getElementById('emWa').value||'').replace(/\D/g,''),guarantee:Math.max(0,Number(document.getElementById('emGuarantee').value||0)),mail:(document.getElementById('emMail').value||'').trim(),hours:(document.getElementById('emHours').value||'').trim()||'Horario de atención',hoursUrl:(document.getElementById('emHoursUrl').value||'').trim(),termsUrl:(document.getElementById('emTermsUrl').value||'').trim(),whatsappMessage:(document.getElementById('emWaMessage').value||'').trim()||'Hola, Elamoda. Quiero realizar este pedido:\n\n{{PRODUCTOS}}\n\nTotal: {{TOTAL}} MXN\n\nQuedo atento(a) para confirmar disponibilidad, pago y entrega.',ig:emNormalizeSocialUrl(document.getElementById('emIg').value,'instagram'),fb:emNormalizeSocialUrl(document.getElementById('emFb').value,'facebook'),tk:emNormalizeSocialUrl(document.getElementById('emTk').value,'tiktok'),slogan:EM.config.slogan||'Tu estilo, a tu manera.'};
  EM.config=config;
- try{await emSaveSetting('store',{name:config.storeName,logo_url:'',whatsapp:config.wa,email:config.mail,hours:config.hours,hours_url:config.hoursUrl,terms_url:config.termsUrl,whatsapp_message:config.whatsappMessage,description:'',slogan:config.slogan});await emSaveSetting('social',{instagram:config.ig,facebook:config.fb,tiktok:config.tk});emSave();await emApplyStore();emClientAlert('Configuración guardada en Supabase. Ya es visible para todos los visitantes al actualizar la tienda.');}catch(e){emClientAlert('No se pudo guardar: '+e.message);}
+ try{await emSaveSetting('store',{name:config.storeName,logo_url:'',whatsapp:config.wa,email:config.mail,hours:config.hours,hours_url:config.hoursUrl,terms_url:config.termsUrl,whatsapp_message:config.whatsappMessage,description:'',slogan:config.slogan});await emSaveSetting('social',{instagram:config.ig,facebook:config.fb,tiktok:config.tk});await emSaveSetting('order_config',{guarantee:config.guarantee});emSave();await emApplyStore();emClientAlert('Configuración guardada en Supabase. Ya es visible para todos los visitantes al actualizar la tienda.');}catch(e){emClientAlert('No se pudo guardar: '+e.message);}
 }
 function emRenderAll(){emRenderProducts();emRenderCats();emLoadConfig();if(!EM.visibility)EM.visibility={inicio:true,categorias:true,novedades:true,ofertas:false,contacto:true,redes:true,banner:true};emRenderVisibility();emRenderContent()}
 
@@ -1784,7 +1796,7 @@ async function emWhatsApp(){
  if(!delivery){emClientAlert('Selecciona una opción de entrega antes de enviar tu pedido.');return;}
  const deliveryCost=Number(delivery.cost||0);
  const total=subtotal+deliveryCost;
- const guarantee=20;
+ const guarantee=Math.max(0,Number(EM.config.guarantee??20)||0);
  const lines=cart.map(x=>{
    const p=EM.products.find(p=>String(p.id)===String(x.id))||{};
    const opts=Array.isArray(x.selectedOptions)?x.selectedOptions:[];
@@ -1796,7 +1808,7 @@ async function emWhatsApp(){
  let template=EM.config.whatsappMessage||'Hola, Elamoda. Quiero realizar este pedido:\n\n{{PRODUCTOS}}\n\nTotal: {{TOTAL}} MXN\n\nQuedo atento(a) para confirmar disponibilidad, pago y entrega.';
  const deliveryText='\n\nEntrega: '+(delivery.type==='address'?'Otra ubicación: '+delivery.station:delivery.label+' · '+delivery.line+' · '+delivery.station)+'\nCosto de entrega: '+emMoney(deliveryCost);
  const msg=template.replace(/\{\{PRODUCTOS\}\}/g,lines).replace(/\{\{TOTAL\}\}/g,emMoney(total))+deliveryText;
- const paymentMessage='Para poder agendar tu entrega es necesario realizar un pago de $20 MXN como garantía'+(deliveryCost>0?' más la tarifa de entrega de '+emMoney(deliveryCost):'')+'.\n\nEsto se solicita debido a que en pedidos anteriores algunas personas no acudieron a recoger sus productos. La garantía de $20 MXN se descontará del costo total de tu compra; no es un cargo adicional.\n\n¿Deseas continuar y enviar tu pedido por WhatsApp?';
+ const paymentMessage=guarantee>0?'Para poder agendar tu entrega es necesario realizar un pago de '+emMoney(guarantee)+' como garantía'+(deliveryCost>0?' más la tarifa de entrega de '+emMoney(deliveryCost):'')+'.\n\nEsto se solicita debido a que en pedidos anteriores algunas personas no acudieron a recoger sus productos. La garantía de '+emMoney(guarantee)+' se descontará del costo total de tu compra; no es un cargo adicional.\n\n¿Deseas continuar y enviar tu pedido por WhatsApp?':(deliveryCost>0?'La tarifa de entrega es de '+emMoney(deliveryCost)+'.\n\n¿Deseas continuar y enviar tu pedido por WhatsApp?':'¿Deseas continuar y enviar tu pedido por WhatsApp?');
  if(!(await emClientConfirm(paymentMessage)))return;
  window.open('https://wa.me/'+(EM.config.wa||'5215512345678')+'?text='+encodeURIComponent(msg),'_blank');
 }
@@ -1907,12 +1919,14 @@ function emRenderPublicProductCard(p){
  const noStockNoOptions=!hasOptions && Number(p.stock??0)<=0;
  const blocked=allOptionsOut||noStockNoOptions;
  const optionsHtml=(emPublicOptionGroup('Talla','size',g.sizes)+emPublicOptionGroup('Medida','measure',g.measures)+emPublicOptionGroup('Color','color',g.colors));
+ const isFlorelaCollab=Array.isArray(EM.productFlags?.collaborationFlorelaIds)&&EM.productFlags.collaborationFlorelaIds.some(x=>String(x)===String(p.id));
+ const specialBadge=p.featured?'<span class="em-featured-badge" title="Producto destacado" aria-label="Producto destacado">★</span>':'';
  const detailsHtml=g.details.length?'<details class="em-product-details" style="display:block;margin-top:9px;border:1px solid #eee;border-radius:7px;padding:8px 10px;background:#fff"><summary style="cursor:pointer;font-weight:700;color:#444;list-style:none">📐 Ver medidas y detalles <span style="float:right">⌄</span></summary><div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:12px;color:#666">'+g.details.map(o=>'<div><b>'+escapeHtml(String(o.label||'Medida'))+':</b> '+escapeHtml(String(o.value||''))+(o.unit?' '+escapeHtml(String(o.unit)):'')+'</div>').join('')+'</div></details>':'';
  return '<article class="card"><div class="photo" onclick="emOpenProductGallery(\''+p.id+'\')" style="cursor:pointer;position:relative">'+
    (p.image_url?'<img src="'+p.image_url+'" alt="'+String(p.name).replace(/"/g,'&quot;')+'" style="width:100%;height:100%;object-fit:cover">':'FOTO DEL PRODUCTO')+
    (blocked?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.28);pointer-events:none"><span style="background:#111;color:#fff;padding:8px 14px;border-radius:4px;font-size:12px;font-weight:700;letter-spacing:.8px">AGOTADO</span></div>':'')+
    '</div><button class="heart" data-favorite-id="'+p.id+'" onclick="toggleFavorite(\''+p.id+'\');return false">'+(isFavorite(p.id)?'♥':'♡')+
-   '</button><div class="info"><div class="name">'+p.name+'</div>'+
+   '</button><div class="info">'+((isFlorelaCollab||p.featured)?'<div class="em-special-row">'+(isFlorelaCollab?'<div class="em-florela-badge">Colaboración con FlorEla</div>':'<span></span>')+(p.featured?specialBadge:'')+'</div>':'')+'<div class="name">'+p.name+'</div>'+
    (p.description?'<div class="product-description" style="font-size:12px;color:#666;line-height:1.45;margin:6px 0 8px;white-space:pre-line"><span class="desc-preview">'+escapeHtml(String(p.description).length>110?String(p.description).slice(0,110)+'…':p.description)+'</span><span class="desc-full" style="display:none">'+escapeHtml(p.description)+'</span>'+
    (String(p.description).length>110?'<button type="button" class="desc-toggle" style="display:block;border:0;background:none;padding:4px 0;color:#555;text-decoration:underline;cursor:pointer;font-size:11px" onclick="const c=this.parentElement;const a=c.querySelector(\'.desc-preview\'),b=c.querySelector(\'.desc-full\');const open=b.style.display===\'inline\';a.style.display=open?\'inline\':\'none\';b.style.display=open?\'none\':\'inline\';this.textContent=open?\'Leer más\':\'Leer menos\';">Leer más</button>':'')+'</div>':'')+
    '<div class="price-row"><span class="real '+((p.disc>0||Number(p.compare_at_price||0)>emFinal(p))?'sale-price':'')+'">'+emMoney(emFinal(p))+'</span><span class="discount">'+(p.disc>0?'-'+p.disc+'%':(Number(p.compare_at_price||0)>emFinal(p)?'Descuento':''))+'</span><span class="old">'+(Number(p.compare_at_price||0)>emFinal(p)?emMoney(p.compare_at_price):(p.disc>0?emMoney(p.price):''))+'</span></div>'+
@@ -1925,7 +1939,7 @@ function emRenderPublicProductCard(p){
 
 function emFilterCategory(categoryId){
  const id=String(categoryId||'');
- const list=(Array.isArray(EM.products)?EM.products:[]).filter(p=>p.visible!==false && String(p.category_id||'')===id);
+ const list=(Array.isArray(EM.products)?EM.products:[]).filter(p=>p.visible!==false && String(p.category_id||'')===id).sort((a,b)=>Number(b.featured===true)-Number(a.featured===true));
  const products=document.querySelector('.section#novedades .products');
  if(!products)return;
  products.innerHTML=list.map(emRenderPublicProductCard).join('');
@@ -1939,7 +1953,7 @@ function emFilterCategory(categoryId){
 }
 function emShowAllCategories(){
  const products=document.querySelector('.section#novedades .products');
- const list=(Array.isArray(EM.products)?EM.products:[]).filter(p=>p.visible!==false);
+ const list=(Array.isArray(EM.products)?EM.products:[]).filter(p=>p.visible!==false).sort((a,b)=>Number(b.featured===true)-Number(a.featured===true));
  if(!products)return;
  products.innerHTML=list.map(emRenderPublicProductCard).join('');
  [...products.querySelectorAll('.card')].forEach((card,i)=>emPreparePublicCard(card,list[i]));
@@ -2063,7 +2077,7 @@ function emApplyStore(){
 
  const products=document.querySelector('.section#novedades .products');
  if(products){
-  const available=EM.products.filter(p=>p.visible!==false);
+  const available=EM.products.filter(p=>p.visible!==false).sort((a,b)=>Number(b.featured===true)-Number(a.featured===true));
   products.innerHTML=available.map(emRenderPublicProductCard).join('');
   [...products.querySelectorAll('.card')].forEach((card,i)=>emPreparePublicCard(card,available[i]));
  }
