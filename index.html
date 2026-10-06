@@ -967,6 +967,7 @@ async function emEditProduct(i){
  document.getElementById('emEditProductId').value=p.id;
  document.getElementById('emEditName').value=p.name||'';
  document.getElementById('emEditPrice').value=Number(p.price??0);
+ document.getElementById('emEditPreviousPrice').value=(p.compare_at_price!=null && Number(p.compare_at_price)>0)?Number(p.compare_at_price):'';
  document.getElementById('emEditDescription').value=p.description||'';
  const cat=document.getElementById('emEditCat');
  cat.innerHTML=EM.categories.map(c=>'<option value="'+String(c.id).replace(/"/g,'&quot;')+'">'+escapeHtml(c.name)+'</option>').join('');
@@ -1143,7 +1144,7 @@ function emRenderProducts(){
  const sel=document.getElementById('emCatFilter'), old=sel.value;
  sel.innerHTML='<option value="">Todas las categorías</option>'+EM.categories.map(c=>'<option>'+c.name+'</option>').join('');sel.value=old;
  const q=(document.getElementById('emSearch').value||'').toLowerCase();
- document.getElementById('emProductRows').innerHTML=EM.products.filter(p=>(!sel.value||p.cat===sel.value)&&p.name.toLowerCase().includes(q)).map(p=>'<tr><td><b>'+p.name+'</b><br><small style="color:#777">📷 '+((p.images||[]).length)+'/20 fotos</small></td><td>'+p.cat+'</td><td><b>'+emMoney(emFinal(p))+'</b>'+(Number(p.disc||0)>0?' <span style="color:#e00020">-'+p.disc+'%</span><br><s style="color:#e00020">'+emMoney(p.price)+'</s>':'')+'</td><td><button onclick="emEditProductById(\''+p.id+'\')">✏️ Editar</button> <button onclick="emManageProductImagesById(\''+p.id+'\')">📷 Fotos</button> <button onclick="emDeleteProductFromProducts(\''+p.id+'\')" style="background:#fff0f0;color:#b00020;border:1px solid #f0caca">🗑️ Eliminar</button></td></tr>').join('');
+ document.getElementById('emProductRows').innerHTML=EM.products.filter(p=>(!sel.value||p.cat===sel.value)&&p.name.toLowerCase().includes(q)).map(p=>{const current=Number(emFinal(p)||p.price||0),previous=Number(p.compare_at_price||0),pct=Number(p.disc||0),hasPrev=previous>current,hasSale=pct>0||hasPrev;const saleLabel=pct>0?'-'+pct+'%':(hasPrev?'Descuento':'');const oldPrice=hasPrev?previous:(pct>0?Number(p.price||0):0);return '<tr><td><b>'+p.name+'</b><br><small style="color:#777">📷 '+((p.images||[]).length)+'/20 fotos</small></td><td>'+p.cat+'</td><td><b style="color:'+(hasSale?'#800020':'#111')+'">'+emMoney(current)+'</b>'+(saleLabel?' <span style="color:#800020;font-weight:700">'+saleLabel+'</span>':'')+(oldPrice>current?' <br><s style="color:#111">'+emMoney(oldPrice)+'</s>':'')+'</td><td><button onclick="emEditProductById(\''+p.id+'\')">✏️ Editar</button> <button onclick="emManageProductImagesById(\''+p.id+'\')">📷 Fotos</button> <button onclick="emDeleteProductFromProducts(\''+p.id+'\')" style="background:#fff0f0;color:#b00020;border:1px solid #f0caca">🗑️ Eliminar</button></td></tr>'}).join('');
 }
 
 function emInventoryChannelPrompt(){
