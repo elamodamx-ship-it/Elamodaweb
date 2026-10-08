@@ -17,6 +17,16 @@ footer{border-top:1px solid var(--line);background:#fff;padding:40px 5%;display:
 
 
 .em-special-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:24px;margin:0 0 7px}.em-featured-badge{display:inline-flex;align-items:center;justify-content:center;margin:0 0 0 auto;color:#111;font-size:17px;line-height:1;width:24px;height:24px;border-radius:50%;background:#fff;border:1px solid #ddd;box-shadow:0 1px 5px #0001;vertical-align:middle;flex:0 0 24px}.em-florela-badge{display:block;margin:0;color:#800020;font-size:10px;font-weight:800;letter-spacing:.25px;text-transform:uppercase}.em-product-badge~.em-product-badge{ }
+#emTimedCampaignBar{display:none;background:#111;color:#fff;text-align:center;padding:10px 14px;position:fixed;top:0;left:0;right:0;width:100%;z-index:951;box-sizing:border-box;transition:top .22s ease;box-shadow:0 4px 12px rgba(0,0,0,.10)}
+#emTimedCampaignBar .em-campaign-title{font-size:13px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+#emTimedCampaignBar .em-campaign-count{display:inline-flex;gap:7px;align-items:center;margin-left:10px;vertical-align:middle}
+#emTimedCampaignBar .em-campaign-box{min-width:42px;padding:4px 6px;border-radius:6px;background:#fff;color:#111;font-weight:800;font-size:13px;line-height:1.1}
+#emTimedCampaignBar .em-campaign-box small{display:block;font-size:8px;font-weight:600;color:#777;text-transform:uppercase;margin-top:2px}
+.em-campaign-admin-list{max-height:360px;overflow:auto;border:1px solid #eee;border-radius:8px;padding:8px;background:#fff}
+.em-campaign-admin-row{display:grid;grid-template-columns:58px 28px minmax(140px,1fr) 105px 115px;gap:8px;align-items:center;padding:9px 4px;border-bottom:1px solid #f0f0f0;font-size:12px}.em-campaign-admin-row:last-child{border-bottom:0}.em-campaign-admin-row .em-campaign-thumb{width:50px;height:58px;border-radius:7px;overflow:hidden;background:#f7f1f2;display:flex;align-items:center;justify-content:center}.em-campaign-admin-row .em-campaign-thumb img{width:100%;height:100%;object-fit:cover;display:block}.em-campaign-admin-row .em-campaign-thumb span{font-size:9px;color:#999;text-align:center}.em-campaign-admin-row select,.em-campaign-admin-row input[type=number]{width:100%;box-sizing:border-box;padding:7px;border:1px solid #ccc;border-radius:6px;background:#fff}.em-campaign-admin-row .em-campaign-value{min-width:0}
+.em-campaign-admin-row:last-child{border-bottom:0}
+.em-campaign-admin-row input[type=number]{width:100%;box-sizing:border-box;padding:7px;border:1px solid #ccc;border-radius:6px}
+@media(max-width:600px){#emTimedCampaignBar{padding:9px 8px}.em-campaign-title{display:block}.em-campaign-count{margin:6px 0 0!important}.em-campaign-admin-row{grid-template-columns:48px 26px minmax(100px,1fr) 92px 92px;gap:5px}.em-campaign-admin-row .em-campaign-thumb{width:44px;height:52px}.em-campaign-admin-row input,.em-campaign-admin-row select{font-size:11px;padding:6px}}
 .add-btn{width:100%;margin-top:10px;border:0;background:#111;color:#fff;border-radius:6px;padding:10px 8px;font-size:12px;cursor:pointer}
 .cart-drawer{position:fixed;right:-390px;top:0;width:370px;max-width:92vw;height:100vh;height:100dvh;background:#fff;z-index:1000;box-shadow:-8px 0 30px #0002;transition:right .25s ease;display:flex;flex-direction:column}
 body.elamoda-cart-open{overflow:hidden;overscroll-behavior:none}html.elamoda-cart-open{overflow:hidden}.cart-drawer{overscroll-behavior:contain;touch-action:pan-y;overflow-x:hidden;overflow-y:auto;min-height:0}.cart-head{position:sticky;top:0;z-index:3;background:#fff}.cart-items{overscroll-behavior:contain;touch-action:pan-y;overflow:visible;flex:none;min-height:auto}.cart-foot{flex-shrink:0;max-height:none;overflow:visible;overscroll-behavior:contain;touch-action:pan-y}.cart-item{grid-template-columns:58px 1fr auto;align-items:center}.cart-thumb{width:58px;height:70px;border-radius:7px;overflow:hidden;background:#f7f1f2;display:flex;align-items:center;justify-content:center}.cart-thumb img{width:100%;height:100%;object-fit:cover;display:block}.cart-thumb span{font-size:10px;color:#999;text-align:center;padding:4px}
@@ -42,6 +52,7 @@ body.elamoda-ready>*{opacity:1;transform:none;transition:opacity .65s ease,trans
 @keyframes elamodaCartBump{0%,100%{transform:scale(1)}45%{transform:scale(1.16)}70%{transform:scale(.96)}}
 @media(prefers-reduced-motion:reduce){.elamoda-particle{display:none}.elamoda-cart-bump{animation:none}}
 </style>
+<style id="elamoda-admin-image-viewer">.em-admin-product-thumb{width:58px;height:58px;object-fit:cover;border-radius:8px;border:1px solid #eee;cursor:zoom-in;background:#f7f2f3;display:block}.em-campaign-thumb img{cursor:zoom-in}.em-image-lightbox{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:2147483000;display:none;align-items:center;justify-content:center;padding:22px;cursor:zoom-out}.em-image-lightbox.open{display:flex}.em-image-lightbox img{max-width:94vw;max-height:88vh;object-fit:contain;border-radius:10px;box-shadow:0 18px 60px rgba(0,0,0,.45);cursor:default}.em-image-lightbox-close{position:absolute;right:18px;top:14px;width:42px;height:42px;border:0;border-radius:50%;background:#fff;color:#111;font-size:27px;cursor:pointer}@media(max-width:600px){.em-admin-product-thumb{width:48px;height:48px}.em-image-lightbox{padding:12px}.em-image-lightbox img{max-width:96vw;max-height:82vh}}</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 function emV16Price(p){return Number(emFinal(p)||p.price||0);}
 function emV16Created(p){return new Date(p.created_at||p.createdAt||p.updated_at||0).getTime()||0;}
@@ -109,6 +120,38 @@ body{animation:elamodaPageIn .55s ease-out both}
 .elamoda-cart-bump{animation:elamodaCartBump .55s ease-out}
 @keyframes elamodaCartBump{0%,100%{transform:scale(1)}35%{transform:scale(1.16)}65%{transform:scale(.96)}}
 @media(prefers-reduced-motion:reduce){body,.card,.product-card,.photo img,.product-card img{animation:none!important;transition:none!important}.elamoda-soft-shine:after{display:none}}
+</style>
+<style id="elamoda-personal-inventory-style">
+.em-personal-stat{background:#fff;border:1px solid #eee;border-radius:10px;padding:13px;display:flex;flex-direction:column;gap:5px}.em-personal-stat small{font-size:10px;color:#777}.em-personal-stat b{font-size:18px}.em-personal-thumb{width:64px;height:64px;object-fit:cover;border-radius:9px;border:1px solid #eee;background:#fafafa;cursor:zoom-in;display:block}.em-personal-no-photo{display:grid;place-items:center;color:#aaa;font-size:9px;cursor:default}.em-personal-modal{position:fixed;inset:0;z-index:2147483100;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:15px}.em-personal-modal-card{width:min(760px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}.em-personal-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.em-personal-compare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.em-personal-compare-box{border:1px solid #eee;border-radius:9px;padding:10px;background:#fafafa}.em-personal-modal textarea{display:block;width:100%;box-sizing:border-box;min-height:95px;padding:10px;border:1px solid #ddd;border-radius:7px;resize:vertical}.em-personal-modal input{width:100%;box-sizing:border-box}.em-personal-prices{grid-template-columns:repeat(3,1fr)}
+@media(max-width:700px){.em-personal-form-grid,.em-personal-prices,.em-personal-compare-grid{grid-template-columns:1fr}.em-personal-stat b{font-size:15px}.emPersonalRows{font-size:11px}}
+</style>
+<style id="elamoda-sticky-header">
+/* V64: encabezado realmente flotante. Se mantiene fuera del flujo para que no tiemble ni empuje el contenido al compactarse. */
+header{position:fixed!important;top:0;left:0;right:0;width:100%;z-index:950;background:#fff;box-shadow:0 0 0 rgba(0,0,0,0);transition:box-shadow .22s ease;will-change:box-shadow;overflow-anchor:none}
+header .head{transition:padding .22s ease}
+header .logo{transition:width .22s ease,height .22s ease}
+header .nav{transition:height .22s ease,gap .22s ease}
+header .nav .active{transition:height .22s ease}
+header .whatsapp{transition:padding .22s ease}
+header.elamoda-header-scrolled{box-shadow:0 6px 22px rgba(0,0,0,.08)}
+header.elamoda-header-scrolled .head{padding-top:4px;padding-bottom:4px;min-height:70px}
+header.elamoda-header-scrolled .logo{width:300px;height:82px}
+header.elamoda-header-scrolled .nav{height:40px;gap:30px}
+header.elamoda-header-scrolled .nav .active{height:40px}
+header.elamoda-header-scrolled .whatsapp{padding:9px 15px}
+/* El espacio reservado conserva la altura inicial del encabezado y evita cualquier salto al compactarlo. */
+.elamoda-header-spacer{display:block;width:100%;height:198px}
+@media(max-width:900px){
+ .elamoda-header-spacer{height:150px}
+ header.elamoda-header-scrolled .head{min-height:54px;padding:3px 10px}
+ header.elamoda-header-scrolled .logo{width:220px;height:64px}
+ header.elamoda-header-scrolled .nav{height:40px;gap:20px}
+ header.elamoda-header-scrolled .nav .active{height:40px}
+}
+@media(max-width:420px){
+ .elamoda-header-spacer{height:128px}
+ header.elamoda-header-scrolled .logo{width:190px;height:56px}
+}
 </style>
 <style id="elamoda-boot-loader">
 html.elamoda-loading body > *{visibility:hidden!important}
@@ -253,7 +296,7 @@ async function changeQty(name,delta){
         if(row){available=Math.min(available,Number(row.stock||0));}
       }
     }
-    if(item.qty>=available){emClientAlert('No puedes agregar más piezas. Solo quedan '+available+' disponibles.');return;}
+    if(item.qty>=available){emClientAlert('Este artículo ya no cuenta con más disponibilidad.');return;}
   }
   item.qty+=delta; if(item.qty<=0)cart.splice(cart.indexOf(item),1);
   localStorage.setItem('elamoda_cart',JSON.stringify(cart));
@@ -273,14 +316,21 @@ function emRenderDeliveryStations(){const type=document.getElementById('emDelive
 function emUpdateDeliverySummary(){const d=emGetDelivery(),el=document.getElementById('emDeliverySummary');if(!el)return;if(!d){el.textContent='Selecciona línea y estación para calcular la entrega.';renderCartTotals();return;}const day=new Date().getDay(),schedule=(day===0||day===6)?(EM.delivery?.weekend||''):(EM.delivery?.weekday||'');el.innerHTML='<b>'+escapeHtml(d.type==='address'?'Otra ubicación':d.label+' · '+d.line+' · '+d.station)+'</b><br><span style="color:#777">Los horarios establecidos pueden variar según tu ubicación. Revisa los horarios disponibles al momento de hacer tu pedido.</span><br>Costo de entrega: <b>'+emMoney(d.cost)+'</b>';renderCartTotals();}
 function renderCartTotals(){const subtotal=cart.reduce((s,x)=>s+x.price*x.qty,0),d=emGetDelivery(),delivery=d?Number(d.cost||0):0,total=subtotal+delivery;const a=document.getElementById('cartSubtotal'),b=document.getElementById('cartDeliveryCost'),c=document.getElementById('cartTotal');if(a)a.textContent=money(subtotal);if(b)b.textContent=money(delivery);if(c)c.textContent=money(total);}
 function emUpdateCartTermsLink(){const a=document.getElementById('emCartTermsLink');if(!a)return;const u=String(EM.config.termsUrl||'').trim();a.href=u&&u!=='#'?u:'#terminos';a.onclick=function(e){if(!u||u==='#'){e.preventDefault();const el=document.getElementById('terminos')||document.querySelector('[id*=terms]');if(el)el.scrollIntoView({behavior:'smooth'});}};}
-function renderCart(){const box=document.getElementById('cartItems'),badge=document.getElementById('cartBadge');let count=0;if(!cart.length)box.innerHTML='<p style="color:#777;font-size:13px">Aún no has agregado productos.</p>';else box.innerHTML=cart.map(x=>{count+=x.qty;const safeName=String(x.name).replace(/'/g,"\\'");const thumb=x.image?'<img src="'+escapeHtml(x.image)+'" alt="" loading="lazy">':'<span>Sin imagen</span>';return `<div class="cart-item"><div class="cart-thumb">${thumb}</div><div><b>${escapeHtml(x.name)}</b><small>${money(x.price)} c/u</small><div class="qty"><button onclick="changeQty('${safeName}',-1)">−</button><span>${x.qty}</span><button onclick="changeQty('${safeName}',1)">+</button></div></div><b>${money(x.price*x.qty)}</b></div>`}).join('');badge.textContent=count;emRenderDeliverySelectors();renderCartTotals();emUpdateCartTermsLink();}
+function emSyncCartPrices(){
+  cart.forEach(x=>{
+    const p=EM.products.find(prod=>String(prod.id)===String(x.id));
+    if(p)x.price=Number(emFinal(p));
+  });
+  try{localStorage.setItem('elamoda_cart',JSON.stringify(cart));}catch(e){}
+}
+function renderCart(){emSyncCartPrices();const box=document.getElementById('cartItems'),badge=document.getElementById('cartBadge');let count=0;if(!cart.length)box.innerHTML='<p style="color:#777;font-size:13px">Aún no has agregado productos.</p>';else box.innerHTML=cart.map(x=>{count+=x.qty;const safeName=String(x.name).replace(/'/g,"\\'");const thumb=x.image?'<img src="'+escapeHtml(x.image)+'" alt="" loading="lazy">':'<span>Sin imagen</span>';return `<div class="cart-item"><div class="cart-thumb">${thumb}</div><div><b>${escapeHtml(x.name)}</b><small>${money(x.price)} c/u</small><div class="qty"><button onclick="changeQty('${safeName}',-1)">−</button><span>${x.qty}</span><button onclick="changeQty('${safeName}',1)">+</button></div></div><b>${money(x.price*x.qty)}</b></div>`}).join('');badge.textContent=count;emRenderDeliverySelectors();renderCartTotals();emUpdateCartTermsLink();}
 function openCart(){document.getElementById("cartDrawer").classList.add("open");document.getElementById("overlay").classList.add("show");document.body.classList.add("elamoda-cart-open");document.documentElement.classList.add("elamoda-cart-open");renderCart();}
 function closeCart(){document.getElementById("cartDrawer").classList.remove("open");document.getElementById("overlay").classList.remove("show");document.body.classList.remove("elamoda-cart-open");document.documentElement.classList.remove("elamoda-cart-open");}
 function sendWhatsAppOrder(){ emWhatsApp(); }</script>
 
 <style>
 #emAdminAccess{position:fixed;bottom:12px;right:12px;z-index:40;border:1px solid #ddd;background:#fff;border-radius:50%;width:38px;height:38px;opacity:.45;cursor:pointer}
-#emAdmin{display:none;position:fixed;inset:0;background:#fafafa;z-index:60;overflow:auto;color:#111;font-family:Arial,Helvetica,sans-serif}
+#emAdmin{display:none;position:fixed;inset:0;background:#fafafa;z-index:2000;overflow:auto;color:#111;font-family:Arial,Helvetica,sans-serif}
 .emAdminInner{max-width:1180px;margin:auto;padding:22px}.emAdminTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.emAdminBrand{font:400 34px Georgia,serif}.emAdminTabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.emTab{border:1px solid #ddd;background:#fff;border-radius:6px;padding:10px 14px;cursor:pointer}.emTab.active{background:#111;color:#fff}.emPanel{background:#fff;border:1px solid #ece7e8;border-radius:10px;padding:18px}.emRow{display:flex;gap:10px;margin:15px 0}.emRow input,.emRow select,.emField input{padding:10px;border:1px solid #ddd;border-radius:6px}.emRow input{flex:1}.emBtn{background:#111;color:#fff;border:0;border-radius:6px;padding:10px 15px;font-weight:700;cursor:pointer}.emTable{width:100%;border-collapse:collapse;min-width:700px}.emTable th,.emTable td{padding:11px;border-bottom:1px solid #eee;text-align:left;font-size:12px}.emCatGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.emCat{border:1px solid #eee;border-radius:8px;padding:14px}.emField{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}.emField label{font-size:11px;font-weight:700}.emConfigGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:700px){.emConfigGrid{grid-template-columns:1fr}.emAdminInner{padding:14px}.emAdminBrand{font-size:28px}}
 
@@ -305,9 +355,11 @@ function sendWhatsAppOrder(){ emWhatsApp(); }</script>
   <div class="emAdminTabs">
    <button class="emTab active" onclick="emTab('products',this)">📦 Productos</button>
     <button class="emTab" onclick="emTab('inventory',this)">📊 Inventario</button>
+   <button class="emTab" onclick="emTab('personal',this)">🗃️ Inventario personal</button>
    <button class="emTab" onclick="emTab('delivery',this)">🚚 Envíos</button>
    <button class="emTab" onclick="emTab('cats',this)">📂 Categorías</button>
    <button class="emTab" onclick="emTab('config',this)">⚙️ Configuración</button>
+   <button class="emTab" onclick="emTab('campaign',this)">⏳ Campañas</button>
    <button class="emTab" onclick="emTab('content',this)">🖼️ Contenido</button>
    <button class="emTab" onclick="emApplyStore();emClientAlert('Cambios aplicados a la tienda en este navegador.')">🔄 Aplicar cambios</button>
    <button class="emTab" onclick="emTab('visible',this)">👁️ Elementos visibles</button>
@@ -325,6 +377,15 @@ function sendWhatsAppOrder(){ emWhatsApp(); }</script>
 <div class="emRow" style="margin-top:14px"><input id="emInventorySearch" placeholder="🔎 Buscar producto" oninput="emRenderInventory()"><select id="emInventoryCatFilter" onchange="emRenderInventory()"><option value="">Todas las categorías</option></select></div>
 <div style="overflow:auto"><table class="emTable"><thead><tr><th>Producto</th><th>Stock</th><th>Mínimo</th><th>Estado</th><th>Movimiento</th></tr></thead><tbody id="emInventoryRows"></tbody></table></div>
 <div style="margin-top:18px;border:1px solid #eee;border-radius:9px;padding:14px;background:#fff"><b>📜 Historial</b><div id="emInventoryHistory" style="margin-top:10px;font-size:11px;color:#666">Selecciona un producto.</div></div>
+</section>
+<section id="emPersonal" class="emPanel" style="display:none">
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+  <div><h2 style="font:400 25px Georgia,serif;margin:0">🗃️ Inventario personal</h2><p style="font-size:11px;color:#777;margin:5px 0">Registro interno privado. No modifica ni publica los productos de la tienda.</p></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="emTab" type="button" onclick="emSyncPersonalInventoryFromProducts(true)">🔄 Sincronizar productos</button><button class="emBtn" onclick="emOpenPersonalInventoryEditor()">＋ Agregar artículo</button></div>
+ </div>
+ <div id="emPersonalSummary" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0"></div>
+ <div class="emRow" style="margin-top:8px"><input id="emPersonalSearch" placeholder="🔎 Buscar en mi inventario" oninput="emRenderPersonalInventory()"><select id="emPersonalCatFilter" onchange="emRenderPersonalInventory()"><option value="">Todas las categorías activas</option></select><button class="emTab" type="button" onclick="emRenderPersonalInventory()">🔄 Actualizar</button></div>
+ <div style="overflow:auto"><table class="emTable" style="min-width:1050px"><thead><tr><th>Artículo</th><th>Compra</th><th>Mi precio</th><th>Ganancia</th><th>Comparativa</th><th>Notas</th><th>Acciones</th></tr></thead><tbody id="emPersonalRows"></tbody></table></div>
 </section>
 <section id="emDelivery" class="emPanel" style="display:none">
  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><h2 style="font:400 25px Georgia,serif;margin:0">🚚 Envíos y puntos de entrega</h2><p style="font-size:11px;color:#777;margin:5px 0">Aquí administras por separado <b>Metro</b> y <b>Metrobús</b>. Abre una línea para elegir sus estaciones y costos.</p></div><button class="emBtn" onclick="emSaveDelivery()">Guardar envíos</button></div>
@@ -352,6 +413,24 @@ function sendWhatsAppOrder(){ emWhatsApp(); }</script>
    <button class="emBtn" onclick="emSaveConfig()">Guardar configuración</button>
    <p style="font-size:11px;color:#777;background:#fff1f5;padding:10px;border-radius:6px">Los cambios administrativos se guardan en Supabase. En la tienda, Instagram, Facebook y TikTok abrirán la red indicada; WhatsApp y correo también serán enlaces directos.</p>
   </section>
+
+<section id="emCampaign" class="emPanel" style="display:none">
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+  <div><h2 style="font:400 25px Georgia,serif;margin:0">⏳ Campañas</h2><p style="font-size:12px;color:#777;margin:5px 0 0">Crea descuentos temporales con anticipación. La campaña se activa y termina automáticamente según las fechas que elijas.</p></div>
+  <button class="emTab" type="button" onclick="emRenderCampaignProducts()">🔄 Actualizar productos</button>
+ </div>
+ <div style="margin-top:18px;border:1px solid #eee;border-radius:10px;padding:15px;background:#fff9fb">
+  <div class="emConfigGrid">
+   <div class="emField"><label>Nombre de la campaña</label><input id="emCampaignName" placeholder="Ej. Buen Fin"></div>
+   <div class="emField"><label>Activar campaña</label><label style="display:flex;align-items:center;gap:8px;font-size:12px;margin-top:8px"><input id="emCampaignEnabled" type="checkbox"> Activada</label></div>
+   <div class="emField"><label>Inicio</label><input id="emCampaignStart" type="datetime-local"></div>
+   <div class="emField"><label>Finaliza</label><input id="emCampaignEnd" type="datetime-local"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 8px;flex-wrap:wrap"><div><b style="font-size:12px">Productos incluidos</b><div style="font-size:10px;color:#777">Selecciona el producto y elige si la campaña usará porcentaje o precio fijo.</div></div><button class="emTab" type="button" onclick="emToggleAllCampaignProducts()">Seleccionar / quitar todos</button></div>
+  <div id="emCampaignProducts" class="em-campaign-admin-list"></div>
+  <div style="display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap"><span id="emCampaignSaveStatus" style="font-size:12px;color:#777;min-height:18px"></span><button class="emBtn" type="button" id="emCampaignSaveBtn" onclick="emSaveCampaign()">💾 Guardar campaña</button></div>
+ </div>
+</section>
 
 <section id="emVisible" class="emPanel" style="display:none">
  <h2 style="font:400 25px Georgia,serif;margin:0 0 5px">Elementos visibles</h2>
@@ -434,7 +513,12 @@ async function emLoadSettings(){
  const {data,error}=await elamodaSB.from('store_settings').select('key,value');
  if(error)throw error;
  const byKey=Object.fromEntries((data||[]).map(x=>[x.key,x.value||{}]));
- const store=byKey.store||{}; const social=byKey.social||{}; const appearance=byKey.appearance||{}; const orderConfig=byKey.order_config||{}; EM.productFlags=Object.assign({collaborationFlorelaIds:[]},byKey.product_flags||{}); EM.content=byKey.content||EM.content||{bannerDesk:'',bannerMob:'',bannerSlides:[],videoUrl:'',featuredTitle:'',featuredText:'',featuredItems:[],popup:{enabled:false,image:'',title:'',text:'',buttonText:'',buttonUrl:'',startDate:'',endDate:''},footerLinks:[]};
+ const store=byKey.store||{}; const social=byKey.social||{}; const appearance=byKey.appearance||{}; const orderConfig=byKey.order_config||{}; EM.productFlags=Object.assign({collaborationFlorelaIds:[],campaignProducts:{}},byKey.product_flags||{});
+ const remoteCampaign=byKey.campaign&&typeof byKey.campaign==='object'?byKey.campaign:null;
+ let localCampaign=null; try{localCampaign=JSON.parse(localStorage.getItem('ELAMODA_CAMPAIGN_V2')||'null');}catch(_){localCampaign=null;}
+ const fallbackCampaign={enabled:false,name:'',start:'',end:'',products:{}};
+ EM.campaign=Object.assign(fallbackCampaign,(remoteCampaign&&Object.keys(remoteCampaign).length)?remoteCampaign:(localCampaign||{}));
+ EM.content=byKey.content||EM.content||{bannerDesk:'',bannerMob:'',bannerSlides:[],videoUrl:'',featuredTitle:'',featuredText:'',featuredItems:[],popup:{enabled:false,image:'',title:'',text:'',buttonText:'',buttonUrl:'',startDate:'',endDate:''},footerLinks:[]};
  EM.content.popup=Object.assign({enabled:false,image:'',title:'',text:'',buttonText:'',buttonUrl:'',startDate:'',endDate:''},EM.content.popup||{});
  EM.delivery=Object.assign({enabled:true,weekday:'Lunes a viernes · 17:00–20:00',weekend:'Sábado y domingo · 11:00–20:00',defaultCost:0,addressEnabled:true,addressCost:0,metro:[],metrobus:[]},byKey.delivery||EM.delivery||{});
  EM.config={storeName:String(store.name||EM.config.storeName||'Elamoda'),wa:String(store.whatsapp||EM.config.wa||''),mail:String(store.email||EM.config.mail||''),hours:String(store.hours||EM.config.hours||'Horario de atención'),hoursUrl:String(store.hours_url||EM.config.hoursUrl||''),termsUrl:String(store.terms_url||EM.config.termsUrl||''),whatsappMessage:String(store.whatsapp_message||EM.config.whatsappMessage||''),ig:String(social.instagram||EM.config.ig||''),fb:String(social.facebook||EM.config.fb||''),tk:String(social.tiktok||EM.config.tk||''),slogan:String(store.slogan||EM.config.slogan||'Tu estilo, a tu manera.'),guarantee:Math.max(0,Number(orderConfig.guarantee ?? EM.config.guarantee ?? 20)||0)};
@@ -450,7 +534,10 @@ function emEnsureDefaults(){
  Object.keys(d).forEach(k=>{if(typeof EM.visibility[k]!=='boolean')EM.visibility[k]=d[k]});
 }
 function emMoney(n){return '$'+Number(n).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})}
-function emFinal(p){return p.price*(1-p.disc/100)}
+function emBaseFinal(p){return Number(p.price||0)*(1-Number(p.disc||0)/100)}
+function emCampaignActive(){const c=EM.campaign||{};if(!c.enabled||!c.start||!c.end)return false;const now=Date.now(),start=new Date(c.start).getTime(),end=new Date(c.end).getTime();return Number.isFinite(start)&&Number.isFinite(end)&&end>start&&now>=start&&now<end;}
+function emCampaignDeal(p){if(!emCampaignActive())return null;const d=(EM.campaign?.products||{})[String(p.id)];if(!d)return null;const base=emBaseFinal(p);if(d.mode==='fixed'){const fixed=Number(d.price||0);if(!Number.isFinite(fixed)||fixed<=0||fixed>=base)return null;return {mode:'fixed',base,price:Number(fixed.toFixed(2)),label:'Precio especial'};}const pct=Math.max(0,Math.min(100,Number(d.percent||0)));if(!pct)return null;return {mode:'percent',percent:pct,base,price:Number((base*(1-pct/100)).toFixed(2)),label:'-'+pct+'%'};}
+function emFinal(p){const deal=emCampaignDeal(p);return deal?deal.price:emBaseFinal(p)}
 async function emOpenAdmin(){
  const {data:{session}}=await elamodaSB.auth.getSession();
  if(session){await emVerifyAdmin(); return;}
@@ -481,7 +568,12 @@ function emTab(id,btn){
  document.querySelectorAll('.emTab').forEach(x=>x.classList.remove('active'));
  document.getElementById('em'+id[0].toUpperCase()+id.slice(1)).style.display='block';
  btn.classList.add('active');
- if(id==='visible')emRenderVisibility(); if(id==='content')emRenderContent(); if(id==='inventory')emRenderInventory(); if(id==='delivery')emRenderDeliveryAdmin();
+ if(id==='visible')emRenderVisibility();
+ if(id==='content')emRenderContent();
+ if(id==='inventory')emRenderInventory();
+ if(id==='personal')emRenderPersonalInventory();
+ if(id==='delivery')emRenderDeliveryAdmin();
+ if(id==='campaign')emLoadCampaign();
 }
 
 const EM_METRO_DEFAULT={
@@ -891,6 +983,9 @@ async function emToggleProduct(i){
  await emLoadRemote(); emRenderProducts(); await emApplyStore();
 }
 
+function emOpenImagePreview(url){if(!url)return;let m=document.getElementById('emImageLightbox');if(!m){m=document.createElement('div');m.id='emImageLightbox';m.className='em-image-lightbox';m.innerHTML='<button class="em-image-lightbox-close" type="button" aria-label="Cerrar">×</button><img id="emImageLightboxImg" alt="Vista previa">';document.body.appendChild(m);m.addEventListener('click',e=>{if(e.target===m||e.target.classList.contains('em-image-lightbox-close'))emCloseImagePreview();});}document.getElementById('emImageLightboxImg').src=url;m.classList.add('open');document.body.style.overflow='hidden';}
+function emCloseImagePreview(){const m=document.getElementById('emImageLightbox');if(m)m.classList.remove('open');document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')emCloseImagePreview();});
 function emEnsureProductGalleryModal(){
  if(document.getElementById('emProductImagesModal'))return;
  const div=document.createElement('div');
@@ -1088,9 +1183,145 @@ async function emSaveNewProduct(){
  }catch(e){emClientAlert('No se pudo crear: '+e.message);}
 }
 
+function emRenderCampaignProducts(){
+ const box=document.getElementById('emCampaignProducts'); if(!box)return;
+ const selected=(EM.campaign&&EM.campaign.products)||{};
+ const products=(EM.products||[]).slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es'));
+ box.innerHTML=products.map(p=>{
+  const id=String(p.id),d=selected[id]||{},mode=d.mode==='fixed'?'fixed':'percent';
+  const legacyPct=Number(d.percent||0);
+  const value=mode==='fixed' ? Number(d.price||0) : (legacyPct||Number(d.percent||10)||10);
+  const checked=mode==='fixed' ? Number(d.price||0)>0 : Number(d.percent||0)>0;
+  const img=p.image_url||p.images?.[0]||'';
+  const base=Number(emBaseFinal(p)||0);
+  return '<label class="em-campaign-admin-row">'+
+    '<span class="em-campaign-thumb">'+(img?'<img src="'+escapeHtml(img)+'" alt="" loading="lazy" onclick="event.preventDefault();event.stopPropagation();emOpenImagePreview(this.src)">':'<span>Sin foto</span>')+'</span>'+
+    '<input type="checkbox" class="emCampaignProductCheck" data-id="'+id+'" '+(checked?'checked':'')+'>'+
+    '<span><b>'+escapeHtml(p.name||'Producto')+'</b><small style="display:block;color:#888">'+escapeHtml(p.cat||'')+'</small><small style="display:block;color:#999">Precio actual: '+emMoney(base)+'</small></span>'+
+    '<select class="emCampaignProductMode" data-id="'+id+'" aria-label="Tipo de descuento"><option value="percent" '+(mode==='percent'?'selected':'')+'>Porcentaje %</option><option value="fixed" '+(mode==='fixed'?'selected':'')+'>Precio fijo $</option></select>'+
+    '<input class="emCampaignProductValue em-campaign-value" data-id="'+id+'" type="number" min="0.01" '+(mode==='percent'?'max="90" step="1"':'max="'+Math.max(.01,base-0.01).toFixed(2)+'" step="0.01"')+' value="'+(checked?value:(mode==='fixed'?Math.max(.01,base*.8).toFixed(2):10))+'" '+(checked?'':'disabled')+' aria-label="'+(mode==='fixed'?'Precio fijo de campaña':'Porcentaje de descuento')+'">'+
+   '</label>';
+ }).join('')||'<div style="padding:15px;color:#777;font-size:12px">No hay productos disponibles.</div>';
+ box.querySelectorAll('.emCampaignProductCheck').forEach(cb=>cb.addEventListener('change',()=>{
+   const id=CSS.escape(cb.dataset.id),inp=box.querySelector('.emCampaignProductValue[data-id="'+id+'"]'),mode=box.querySelector('.emCampaignProductMode[data-id="'+id+'"]');
+   if(inp)inp.disabled=!cb.checked;
+   if(mode)mode.disabled=!cb.checked;
+ }));
+ box.querySelectorAll('.emCampaignProductMode').forEach(sel=>sel.addEventListener('change',()=>{
+   const id=CSS.escape(sel.dataset.id),inp=box.querySelector('.emCampaignProductValue[data-id="'+id+'"]'),p=EM.products.find(x=>String(x.id)===String(sel.dataset.id)),base=Number(emBaseFinal(p)||0);
+   if(!inp)return;
+   if(sel.value==='fixed'){inp.max=Math.max(.01,base-.01).toFixed(2);inp.step='0.01';inp.value=Math.max(.01,base*.8).toFixed(2);inp.setAttribute('aria-label','Precio fijo de campaña');}
+   else{inp.removeAttribute('max');inp.max='90';inp.step='1';inp.value='20';inp.setAttribute('aria-label','Porcentaje de descuento');}
+ }));
+}
+function emToggleAllCampaignProducts(){
+ const checks=[...document.querySelectorAll('#emCampaignProducts .emCampaignProductCheck')]; if(!checks.length)return;
+ const all=checks.every(x=>x.checked); checks.forEach(cb=>{cb.checked=!all;cb.dispatchEvent(new Event('change'));});
+}
+function emCampaignLocalValue(v){return v?String(v).slice(0,16):'';}
+function emCampaignIsValid(c){
+ return !!(c&&c.enabled&&c.name&&c.start&&c.end&&Object.keys(c.products||{}).length);
+}
+function emRefreshCampaignProducts(){
+ const publicProducts=document.querySelector('.section#novedades .products');
+ if(!publicProducts)return;
+ const available=(EM.products||[]).filter(p=>p.visible!==false).sort((a,b)=>Number(b.featured===true)-Number(a.featured===true));
+ publicProducts.innerHTML=available.map(emRenderPublicProductCard).join('');
+ [...publicProducts.querySelectorAll('.card')].forEach((card,i)=>emPreparePublicCard(card,available[i]));
+}
+async function emSaveCampaign(){
+ const status=document.getElementById('emCampaignSaveStatus');
+ const btn=document.getElementById('emCampaignSaveBtn');
+ const setStatus=(msg,ok=false)=>{if(status){status.textContent=msg;status.style.color=ok?'#26734d':'#b42318';}};
+ try{
+  setStatus('Guardando…');
+  if(btn)btn.disabled=true;
+  const name=(document.getElementById('emCampaignName')?.value||'').trim();
+  const enabled=!!document.getElementById('emCampaignEnabled')?.checked;
+  const start=(document.getElementById('emCampaignStart')?.value||'').trim();
+  const end=(document.getElementById('emCampaignEnd')?.value||'').trim();
+  if(enabled && (!name||!start||!end)) throw new Error('Completa nombre, inicio y finalización de la campaña.');
+  if(start&&end && new Date(end).getTime()<=new Date(start).getTime()) throw new Error('La fecha de finalización debe ser posterior al inicio.');
+  const products={};
+  document.querySelectorAll('#emCampaignProducts .emCampaignProductCheck').forEach(cb=>{
+   if(!cb.checked)return;
+   const id=String(cb.dataset.id);
+   const mode=document.querySelector('#emCampaignProducts .emCampaignProductMode[data-id="'+CSS.escape(id)+'"]')?.value==='fixed'?'fixed':'percent';
+   const inp=document.querySelector('#emCampaignProducts .emCampaignProductValue[data-id="'+CSS.escape(id)+'"]');
+   const p=EM.products.find(x=>String(x.id)===id);
+   const base=Number(emBaseFinal(p)||0);
+   const value=Number(inp?.value||0);
+   if(mode==='fixed'){
+    if(!Number.isFinite(value)||value<=0||value>=base) throw new Error('El precio fijo de "'+(p?.name||'producto')+'" debe ser mayor que 0 y menor que su precio actual ('+emMoney(base)+').');
+    products[id]={mode:'fixed',price:Number(value.toFixed(2))};
+   }else{
+    const pct=Math.max(1,Math.min(90,value));
+    if(!Number.isFinite(pct)||pct<=0) throw new Error('El porcentaje de descuento de "'+(p?.name||'producto')+'" no es válido.');
+    products[id]={mode:'percent',percent:pct};
+   }
+  });
+  if(enabled && !Object.keys(products).length) throw new Error('Selecciona al menos un producto para la campaña.');
+  const campaign={enabled,name,start,end,products};
+  EM.campaign=campaign;
+  try{localStorage.setItem('ELAMODA_CAMPAIGN_V2',JSON.stringify(campaign));}catch(e){console.warn(e);}
+  emApplyCampaignBar();
+  emRefreshCampaignProducts();
+  if(typeof renderCart==='function')renderCart();
+  try{
+   await emSaveSetting('campaign',campaign);
+   setStatus('✓ Campaña guardada correctamente.',true);
+  }catch(e){
+   console.error('Elamoda campaign Supabase:',e);
+   setStatus('⚠ Guardada en este navegador. No se pudo sincronizar con Supabase: '+(e?.message||e));
+  }
+ }catch(e){
+  console.error('Elamoda campaign save:',e);
+  setStatus('⚠ '+(e?.message||e));
+ }finally{
+  if(btn)btn.disabled=false;
+ }
+}
+function emApplyCampaignBar(){
+ let bar=document.getElementById('emTimedCampaignBar');
+ if(window.__emCampaignTimer){clearInterval(window.__emCampaignTimer);window.__emCampaignTimer=null;}
+ const c=EM.campaign||{};
+ if(!bar){bar=document.createElement('div');bar.id='emTimedCampaignBar';document.body.insertBefore(bar,document.body.firstElementChild);}
+ const syncPosition=()=>{const header=document.querySelector('header');if(!header)return;const barH=bar.style.display==='none'?0:Math.max(0,Math.round(bar.getBoundingClientRect().height));header.style.top=barH+'px';const spacer=document.querySelector('.elamoda-header-spacer');if(spacer){const headerH=Math.max(0,Math.round(header.getBoundingClientRect().height));spacer.style.height=(headerH+barH)+'px';}};
+ syncPosition();
+ if(window.__emCampaignResizeObserver)window.__emCampaignResizeObserver.disconnect();
+ if(window.ResizeObserver){window.__emCampaignResizeObserver=new ResizeObserver(syncPosition);const header=document.querySelector('header');if(header)window.__emCampaignResizeObserver.observe(header);window.__emCampaignBarResizeObserver=new ResizeObserver(syncPosition);window.__emCampaignBarResizeObserver.observe(bar);}
+ window.addEventListener('scroll',syncPosition,{passive:true});
+ const render=()=>{
+  const now=Date.now(),start=new Date(c.start||0).getTime(),end=new Date(c.end||0).getTime();
+  const active=!!c.enabled&&Number.isFinite(start)&&Number.isFinite(end)&&end>start&&now>=start&&now<end;
+  const state=active?'1':'0';
+  if(active){
+   bar.style.display='block';
+   syncPosition();
+   const total=Math.max(0,Math.floor((end-now)/1000)),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),mins=Math.floor(total%3600/60),secs=total%60;
+   bar.innerHTML='<span class="em-campaign-title">🔥 '+escapeHtml(c.name||'Descuentos por tiempo limitado')+'</span><span class="em-campaign-count"><span class="em-campaign-box">'+String(days).padStart(2,'0')+'<small>días</small></span><span class="em-campaign-box">'+String(hours).padStart(2,'0')+'<small>hrs</small></span><span class="em-campaign-box">'+String(mins).padStart(2,'0')+'<small>min</small></span><span class="em-campaign-box">'+String(secs).padStart(2,'0')+'<small>seg</small></span></span>';
+  }else{bar.style.display='none';syncPosition();}
+  if(bar.dataset.active!==state){bar.dataset.active=state;emRefreshCampaignProducts();if(typeof emSyncCartPrices==='function')emSyncCartPrices();if(document.getElementById('cartDrawer')?.classList.contains('open'))renderCart();}
+ };
+ render();
+ window.__emCampaignTimer=setInterval(render,1000);
+}
 async function emLoadConfig(){
+
  emEnsureDefaults();
  document.getElementById('emWa').value=EM.config.wa||'';document.getElementById('emGuarantee').value=Number(EM.config.guarantee??20);document.getElementById('emMail').value=EM.config.mail||'';document.getElementById('emHours').value=EM.config.hours||'';document.getElementById('emHoursUrl').value=EM.config.hoursUrl||'';document.getElementById('emTermsUrl').value=EM.config.termsUrl||'';document.getElementById('emWaMessage').value=EM.config.whatsappMessage||'';document.getElementById('emIg').value=EM.config.ig||'';document.getElementById('emFb').value=EM.config.fb||'';document.getElementById('emTk').value=EM.config.tk||'';
+}
+function emLoadCampaign(){
+ const c=EM.campaign||{};
+ const name=document.getElementById('emCampaignName');
+ const enabled=document.getElementById('emCampaignEnabled');
+ const start=document.getElementById('emCampaignStart');
+ const end=document.getElementById('emCampaignEnd');
+ if(name)name.value=c.name||'';
+ if(enabled)enabled.checked=!!c.enabled;
+ if(start)start.value=emCampaignLocalValue(c.start||'');
+ if(end)end.value=emCampaignLocalValue(c.end||'');
+ emRenderCampaignProducts();
 }
 function emNormalizeSocialUrl(value,platform){
  let v=String(value||'').trim();
@@ -1163,7 +1394,12 @@ function emRenderProducts(){
  const sel=document.getElementById('emCatFilter'), old=sel.value;
  sel.innerHTML='<option value="">Todas las categorías</option>'+EM.categories.map(c=>'<option>'+c.name+'</option>').join('');sel.value=old;
  const q=(document.getElementById('emSearch').value||'').toLowerCase();
- document.getElementById('emProductRows').innerHTML=EM.products.filter(p=>(!sel.value||p.cat===sel.value)&&p.name.toLowerCase().includes(q)).map(p=>{const current=Number(emFinal(p)||p.price||0),previous=Number(p.compare_at_price||0),pct=Number(p.disc||0),hasPrev=previous>current,hasSale=pct>0||hasPrev;const saleLabel=pct>0?'-'+pct+'%':(hasPrev?'Descuento':'');const oldPrice=hasPrev?previous:(pct>0?Number(p.price||0):0);return '<tr><td><b>'+p.name+'</b><br><small style="color:#777">📷 '+((p.images||[]).length)+'/20 fotos</small></td><td>'+p.cat+'</td><td><b style="color:'+(hasSale?'#800020':'#111')+'">'+emMoney(current)+'</b>'+(saleLabel?' <span style="color:#800020;font-weight:700">'+saleLabel+'</span>':'')+(oldPrice>current?' <br><s style="color:#111">'+emMoney(oldPrice)+'</s>':'')+'</td><td><button onclick="emEditProductById(\''+p.id+'\')">✏️ Editar</button> <button onclick="emManageProductImagesById(\''+p.id+'\')">📷 Fotos</button> <button onclick="emDeleteProductFromProducts(\''+p.id+'\')" style="background:#fff0f0;color:#b00020;border:1px solid #f0caca">🗑️ Eliminar</button></td></tr>'}).join('');
+ document.getElementById('emProductRows').innerHTML=EM.products.filter(p=>(!sel.value||p.cat===sel.value)&&p.name.toLowerCase().includes(q)).map(p=>{
+  const current=Number(emFinal(p)||p.price||0),previous=Number(p.compare_at_price||0),pct=Number(p.disc||0),hasPrev=previous>current,hasSale=pct>0||hasPrev;
+  const saleLabel=pct>0?'-'+pct+'%':(hasPrev?'Descuento':'');const oldPrice=hasPrev?previous:(pct>0?Number(p.price||0):0);
+  const thumb=p.image_url||p.images?.[0]||'';
+  return '<tr><td style="min-width:230px"><div style="display:flex;align-items:center;gap:10px">'+(thumb?'<img class="em-admin-product-thumb" src="'+escapeHtml(thumb)+'" alt="" loading="lazy" onclick="emOpenImagePreview(this.src)" title="Ver imagen grande">':'<div class="em-admin-product-thumb" style="display:grid;place-items:center;font-size:10px;color:#999;cursor:default">Sin foto</div>')+'<div><b>'+p.name+'</b><br><small style="color:#777">📷 '+((p.images||[]).length)+'/20 fotos · Haz clic en la imagen para verla grande</small></div></div></td><td>'+p.cat+'</td><td><b style="color:'+(hasSale?'#800020':'#111')+'">'+emMoney(current)+'</b>'+(saleLabel?' <span style="color:#800020;font-weight:700">'+saleLabel+'</span>':'')+(oldPrice>current?' <br><s style="color:#111">'+emMoney(oldPrice)+'</s>':'')+'</td><td><button onclick="emEditProductById(\''+p.id+'\')">✏️ Editar</button> <button onclick="emManageProductImagesById(\''+p.id+'\')">📷 Fotos</button> <button onclick="emDeleteProductFromProducts(\''+p.id+'\')" style="background:#fff0f0;color:#b00020;border:1px solid #f0caca">🗑️ Eliminar</button></td></tr>';
+ }).join('');
 }
 
 function emInventoryChannelPrompt(){
@@ -1430,7 +1666,7 @@ async function emRestorePreviousStock(id){
 }
 async function emDeleteInventoryMovement(movementId,productId){
  if(!movementId)return;
- if(!confirm('¿Eliminar este movimiento del historial?\n\nEsto NO cambiará el stock actual.'))return;
+ if(!confirm('⚠️ ¿Estás seguro de eliminar definitivamente este movimiento del historial?\n\nEsto NO cambiará el stock actual y no podrás recuperar este registro.'))return;
  try{
   const {error}=await elamodaSB.from('inventory_movements').delete().eq('id',movementId);
   if(error)throw error;
@@ -1439,7 +1675,7 @@ async function emDeleteInventoryMovement(movementId,productId){
 }
 async function emDeleteAllInventoryHistory(productId){
  if(!productId)return;
- if(!confirm('¿Eliminar TODO el historial de este producto?\n\nEl stock actual NO cambiará. Esta acción no se puede deshacer.'))return;
+ if(!confirm('⚠️ ¿Estás seguro de eliminar DEFINITIVAMENTE TODO el historial de este producto?\n\nEl stock actual NO cambiará, pero todos los movimientos se borrarán y no se podrán recuperar.'))return;
  try{
   const {error}=await elamodaSB.from('inventory_movements').delete().eq('product_id',productId);
   if(error)throw error;
@@ -1595,7 +1831,7 @@ function emRenderInventory(){
 
 async function emDeleteProductFromProducts(id){
  const p=EM.products.find(x=>String(x.id)===String(id)); if(!p)return;
- if(!confirm('¿Eliminar "'+p.name+'" definitivamente?\n\nSe borrará del inventario y también dejará de aparecer en la tienda.'))return;
+ if(!confirm('⚠️ ¿Estás seguro de eliminar definitivamente "'+p.name+'"?\n\nSe borrará del inventario y dejará de aparecer en la tienda. Esta acción no se puede deshacer.'))return;
  try{
    let r=await elamodaSB.from('product_options').delete().eq('product_id',p.id); if(r.error)throw r.error;
    r=await elamodaSB.from('product_images').delete().eq('product_id',p.id); if(r.error)throw r.error;
@@ -1607,7 +1843,7 @@ async function emDeleteProductFromProducts(id){
 
 async function emDeleteProductFromInventory(id){
  const p=EM.products.find(x=>String(x.id)===String(id)); if(!p)return;
- if(!confirm('¿Eliminar "'+p.name+'" definitivamente del inventario y de la tienda?\n\nTambién se eliminarán sus tallas, medidas y colores.'))return;
+ if(!confirm('⚠️ ¿Estás seguro de eliminar definitivamente "'+p.name+'" del inventario y de la tienda?\n\nTambién se eliminarán sus tallas, medidas y colores. Esta acción no se puede deshacer.'))return;
  try{
   let r=await elamodaSB.from('product_options').delete().eq('product_id',p.id);
   if(r.error)throw r.error;
@@ -1670,14 +1906,14 @@ async function emAddCart(productId,selectedOptions=[]){
      if(!o || Number(o.stock??0)<=0){emClientAlert('La opción seleccionada está agotada.');return;}
      const existing=cart.find(c=>String(c.id)===String(p.id) && JSON.stringify(c.selectedOptions||[])===JSON.stringify(selectedOptions));
      if(existing && existing.qty>=Number(o.stock||0)){
-       emClientAlert('No puedes agregar más piezas de esta opción. Solo quedan '+Number(o.stock||0)+' disponibles.');return;
+       emClientAlert('Este artículo ya no cuenta con más disponibilidad.');return;
      }
    }
  }else{
    if(Number(p.stock??0)<=0){emClientAlert('Este producto está agotado.');return;}
    const existing=cart.find(c=>String(c.id)===String(p.id) && !(c.selectedOptions||[]).length);
    if(existing && existing.qty>=Number(p.stock||0)){
-     emClientAlert('No puedes agregar más piezas de este producto. Solo quedan '+Number(p.stock||0)+' disponibles.');return;
+     emClientAlert('Este artículo ya no cuenta con más disponibilidad.');return;
    }
  }
  const selectedLabel=selectedOptions.length
@@ -1920,6 +2156,7 @@ function emRenderPublicProductCard(p){
  const blocked=allOptionsOut||noStockNoOptions;
  const optionsHtml=(emPublicOptionGroup('Talla','size',g.sizes)+emPublicOptionGroup('Medida','measure',g.measures)+emPublicOptionGroup('Color','color',g.colors));
  const isFlorelaCollab=Array.isArray(EM.productFlags?.collaborationFlorelaIds)&&EM.productFlags.collaborationFlorelaIds.some(x=>String(x)===String(p.id));
+ const campaignDeal=emCampaignDeal(p);
  const specialBadge=p.featured?'<span class="em-featured-badge" title="Producto destacado" aria-label="Producto destacado">★</span>':'';
  const detailsHtml=g.details.length?'<details class="em-product-details" style="display:block;margin-top:9px;border:1px solid #eee;border-radius:7px;padding:8px 10px;background:#fff"><summary style="cursor:pointer;font-weight:700;color:#444;list-style:none">📐 Ver medidas y detalles <span style="float:right">⌄</span></summary><div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:12px;color:#666">'+g.details.map(o=>'<div><b>'+escapeHtml(String(o.label||'Medida'))+':</b> '+escapeHtml(String(o.value||''))+(o.unit?' '+escapeHtml(String(o.unit)):'')+'</div>').join('')+'</div></details>':'';
  return '<article class="card"><div class="photo" onclick="emOpenProductGallery(\''+p.id+'\')" style="cursor:pointer;position:relative">'+
@@ -1929,7 +2166,7 @@ function emRenderPublicProductCard(p){
    '</button><div class="info">'+((isFlorelaCollab||p.featured)?'<div class="em-special-row">'+(isFlorelaCollab?'<div class="em-florela-badge">Colaboración con FlorEla</div>':'<span></span>')+(p.featured?specialBadge:'')+'</div>':'')+'<div class="name">'+p.name+'</div>'+
    (p.description?'<div class="product-description" style="font-size:12px;color:#666;line-height:1.45;margin:6px 0 8px;white-space:pre-line"><span class="desc-preview">'+escapeHtml(String(p.description).length>110?String(p.description).slice(0,110)+'…':p.description)+'</span><span class="desc-full" style="display:none">'+escapeHtml(p.description)+'</span>'+
    (String(p.description).length>110?'<button type="button" class="desc-toggle" style="display:block;border:0;background:none;padding:4px 0;color:#555;text-decoration:underline;cursor:pointer;font-size:11px" onclick="const c=this.parentElement;const a=c.querySelector(\'.desc-preview\'),b=c.querySelector(\'.desc-full\');const open=b.style.display===\'inline\';a.style.display=open?\'inline\':\'none\';b.style.display=open?\'none\':\'inline\';this.textContent=open?\'Leer más\':\'Leer menos\';">Leer más</button>':'')+'</div>':'')+
-   '<div class="price-row"><span class="real '+((p.disc>0||Number(p.compare_at_price||0)>emFinal(p))?'sale-price':'')+'">'+emMoney(emFinal(p))+'</span><span class="discount">'+(p.disc>0?'-'+p.disc+'%':(Number(p.compare_at_price||0)>emFinal(p)?'Descuento':''))+'</span><span class="old">'+(Number(p.compare_at_price||0)>emFinal(p)?emMoney(p.compare_at_price):(p.disc>0?emMoney(p.price):''))+'</span></div>'+
+   '<div class="price-row"><span class="real '+((campaignDeal||p.disc>0||Number(p.compare_at_price||0)>emBaseFinal(p))?'sale-price':'')+'">'+emMoney(emFinal(p))+'</span><span class="discount">'+(campaignDeal?(campaignDeal.mode==='fixed'?'Precio especial':campaignDeal.label):(p.disc>0?'-'+p.disc+'%':(Number(p.compare_at_price||0)>emBaseFinal(p)?'Descuento':'')))+'</span><span class="old">'+(campaignDeal?emMoney(campaignDeal.base):(Number(p.compare_at_price||0)>emBaseFinal(p)?emMoney(p.compare_at_price):(p.disc>0?emMoney(p.price):'')))+'</span></div>'+
    optionsHtml+detailsHtml+
    '<div style="display:flex;gap:5px;align-items:center"><button class="add-btn" data-product-id="'+p.id+'" '+(blocked?'disabled style="opacity:.5;cursor:not-allowed"':'')+' onclick="emAddCartFromButton(this)">Agregar al carrito</button>'+
    (p.images&&p.images.length>1?'<button onclick="emOpenProductGallery(\''+p.id+'\')" style="border:1px solid #ddd;background:#fff;border-radius:5px;padding:8px;cursor:pointer" title="Ver fotos">📷</button>':'')+
@@ -2068,7 +2305,10 @@ function emToggleLegal(btn,id){
  btn.setAttribute('aria-expanded',open?'false':'true');
  panel.classList.toggle('open',!open);
 }
-function emApplyStore(){
+function emApplyStore(skipCampaignBar){
+ if(window.__emApplyingStore)return;
+ window.__emApplyingStore=true;
+ try{
  emApplyRebuiltContact();
  emEnsureDefaults(); emEnsureContent();
 
@@ -2214,6 +2454,8 @@ function emApplyStore(){
  }
 
  emShowPopupIfNeeded();
+ emApplyCampaignBar();
+ }finally{window.__emApplyingStore=false;}
 }
 
 document.addEventListener('click',function(e){
@@ -2243,8 +2485,146 @@ document.addEventListener('DOMContentLoaded',async()=>{
  }
 });
 </script>
+<script>
+(function(){
+ function setupStickyHeader(){
+  const h=document.querySelector('header');if(!h)return;
+  if(!document.querySelector('.elamoda-header-spacer')){
+   const spacer=document.createElement('div');
+   spacer.className='elamoda-header-spacer';
+   h.parentNode.insertBefore(spacer,h);
+  }
+  let compact=h.classList.contains('elamoda-header-scrolled');
+  let ticking=false;
+  const update=()=>{
+   const y=window.scrollY||window.pageYOffset||0;
+   /* Histéresis amplia: el estado solo cambia lejos del punto de activación. */
+   if(!compact && y>140){compact=true;h.classList.add('elamoda-header-scrolled');}
+   else if(compact && y<20){compact=false;h.classList.remove('elamoda-header-scrolled');}
+   ticking=false;
+  };
+  const onScroll=()=>{if(!ticking){ticking=true;requestAnimationFrame(update);}};
+  update();window.addEventListener('scroll',onScroll,{passive:true});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setupStickyHeader);else setupStickyHeader();
+})();
+</script>
 <script>function sendWhatsApp(){emWhatsApp();}</script>
 <script>
+/* V62: inventario personal privado, separado de la tienda */
+function emGetPersonalInventory(){
+ try{const x=JSON.parse(localStorage.getItem('ELAMODA_PERSONAL_INVENTORY_V1')||'[]');return Array.isArray(x)?x:[];}catch(e){return[];}
+}
+function emSavePersonalInventory(list){try{localStorage.setItem('ELAMODA_PERSONAL_INVENTORY_V1',JSON.stringify(list));return true;}catch(e){emClientAlert('No se pudo guardar el inventario personal. El navegador puede haberse quedado sin espacio.');return false;}}
+function emPersonalMoney(v){return emMoney(Number(v||0));}
+function emOpenPersonalImage(url,name){if(typeof emOpenImagePreview==='function'&&url){emOpenImagePreview(url);return;}emOpenInventoryImage(url,name);}
+function emClosePersonalInventoryEditor(){const m=document.getElementById('emPersonalInventoryModal');if(m)m.remove();}
+function emReadPersonalImage(file,max=1000,quality=.72){return new Promise(resolve=>{if(!file){resolve('');return;}const fr=new FileReader();fr.onload=()=>{const img=new Image();img.onload=()=>{try{const scale=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',quality));}catch(e){resolve(fr.result||'');}};img.onerror=()=>resolve(fr.result||'');img.src=fr.result;};fr.onerror=()=>resolve('');fr.readAsDataURL(file);});}
+function emPersonalProductPhoto(p){
+ const imgs=Array.isArray(p?.images)?p.images.filter(Boolean):[];
+ return imgs[0]||p?.image_url||'';
+}
+function emPersonalPublishedPrice(p){
+ try{
+  const value=typeof emFinal==='function'?emFinal(p):(Number(p?.price||0)*(1-Number(p?.disc||0)/100));
+  return Number.isFinite(Number(value))?Number(value):0;
+ }catch(_){return Number(p?.price||0)||0;}
+}
+function emSyncPersonalInventoryFromProducts(showMessage=false){
+ const products=Array.isArray(EM.products)?EM.products:[];
+ const list=emGetPersonalInventory();
+ const bySource=new Map(list.filter(x=>x.sourceProductId).map(x=>[String(x.sourceProductId),x]));
+ let added=0;
+ products.forEach(p=>{
+  if(!p?.id)return;
+  const key=String(p.id);
+  if(bySource.has(key))return;
+  const item={
+   id:'pi_product_'+key,
+   sourceProductId:key,
+   name:p.name||'Producto',
+   photo:emPersonalProductPhoto(p),
+   cost:0,
+   sale:emPersonalPublishedPrice(p),
+   comp1Name:'',comp1Price:0,comp2Name:'',comp2Price:0,comp3Name:'',comp3Price:0,
+   categoryId:p.category_id||'',
+   categoryName:p.cat||'',
+   notes:'',
+   updatedAt:new Date().toISOString()
+  };
+  list.push(item);bySource.set(key,item);added++;
+ });
+ if(added){
+  if(!emSavePersonalInventory(list))return 0;
+ }
+ if(showMessage)emClientAlert(added?('Se agregaron '+added+' artículo(s) nuevos a tu inventario personal.'):'Todos los artículos ya estaban registrados.');
+ return added;
+}
+
+function emOpenPersonalInventoryEditor(id){
+ const list=emGetPersonalInventory(), item=list.find(x=>String(x.id)===String(id))||{};
+ const old=document.getElementById('emPersonalInventoryModal');if(old)old.remove();
+ const m=document.createElement('div');m.id='emPersonalInventoryModal';m.className='em-personal-modal';
+ m.innerHTML='<div class="em-personal-modal-card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><h3 style="margin:0;font:400 23px Georgia,serif">'+(id?'✏️ Editar artículo':'＋ Nuevo artículo')+'</h3><div style="font-size:11px;color:#777;margin-top:4px">Este registro es interno y no se publica en la tienda.</div></div><button type="button" class="emTab" onclick="emClosePersonalInventoryEditor()">×</button></div>'+
+ '<input type="hidden" id="emPersonalId" value="'+escapeHtml(String(item.id||''))+'">'+
+ '<div class="em-personal-form-grid">'+
+ '<div class="emField"><label>Artículo</label><input id="emPersonalName" value="'+escapeHtml(item.name||'')+'" placeholder="Ej. Blusa rosa" required></div>'+
+ '<div class="emField"><label>Foto</label><input id="emPersonalPhoto" type="file" accept="image/*"><small style="color:#777">La foto se guarda solo como registro interno.</small></div>'+
+ '</div>'+
+ '<div class="em-personal-form-grid em-personal-prices">'+
+ '<div class="emField"><label>Precio al que me lo vendieron</label><input id="emPersonalCost" type="number" min="0" step="0.01" value="'+(item.cost??'')+'" placeholder="0.00"></div>'+
+ '<div class="emField"><label>Precio al que lo estoy dando</label><input id="emPersonalSale" type="number" min="0" step="0.01" value="'+(item.sale??'')+'" placeholder="0.00"></div>'+ 
+ '<div class="emField"><label>Ganancia</label><input id="emPersonalProfit" type="text" value="'+emPersonalMoney(Number(item.sale||0)-Number(item.cost||0))+'" readonly style="background:#f7f7f7"></div>'+ 
+ '</div>'+ 
+ '<div style="font-size:12px;font-weight:700;margin:14px 0 8px">Precios de otras tiendas para comparar</div>'+ 
+ '<div class="em-personal-compare-grid">'+
+ [1,2,3].map(n=>'<div class="em-personal-compare-box"><div class="emField"><label>Tienda / referencia '+n+'</label><input id="emPersonalCompName'+n+'" value="'+escapeHtml(item['comp'+n+'Name']||'')+'" placeholder="Ej. Tienda '+n+'"></div><div class="emField"><label>Precio</label><input id="emPersonalCompPrice'+n+'" type="number" min="0" step="0.01" value="'+(item['comp'+n+'Price']??'')+'" placeholder="0.00"></div></div>').join('')+
+ '</div>'+ 
+ '<div class="emField"><label>Notas</label><textarea id="emPersonalNotes" placeholder="Proveedor, calidad, modelo, observaciones, etc.">'+escapeHtml(item.notes||'')+'</textarea></div>'+ 
+ '<div id="emPersonalPhotoPreview" style="margin:4px 0 12px">'+(item.photo?'<img src="'+escapeHtml(item.photo)+'" style="width:110px;height:110px;object-fit:cover;border-radius:10px;border:1px solid #eee;cursor:zoom-in" onclick="emOpenPersonalImage(this.src,this.alt)">':'')+'</div>'+ 
+ '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px"><button type="button" class="emTab" onclick="emClosePersonalInventoryEditor()">Cancelar</button><button type="button" class="emBtn" onclick="emSavePersonalInventoryItem()">💾 Guardar artículo</button></div></div>';
+ document.body.appendChild(m);m.style.display='flex';
+ const cost=document.getElementById('emPersonalCost'),sale=document.getElementById('emPersonalSale'),profit=document.getElementById('emPersonalProfit');
+ const update=()=>{profit.value=emPersonalMoney(Number(sale.value||0)-Number(cost.value||0));};cost.addEventListener('input',update);sale.addEventListener('input',update);
+ document.getElementById('emPersonalPhoto')?.addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;const data=await emReadPersonalImage(f);document.getElementById('emPersonalPhotoPreview').innerHTML=data?'<img src="'+escapeHtml(data)+'" style="width:110px;height:110px;object-fit:cover;border-radius:10px;border:1px solid #eee">':'';m.dataset.newPhoto=data||'';});
+ m.addEventListener('click',e=>{if(e.target===m)emClosePersonalInventoryEditor();});
+}
+async function emSavePersonalInventoryItem(){
+ const name=(document.getElementById('emPersonalName')?.value||'').trim();if(!name){emClientAlert('Escribe el nombre del artículo.');return;}
+ const id=document.getElementById('emPersonalId')?.value||('pi_'+Date.now());
+ const list=emGetPersonalInventory(),idx=list.findIndex(x=>String(x.id)===String(id));
+ const old=idx>=0?list[idx]:{};const modal=document.getElementById('emPersonalInventoryModal');
+ const item={id,name,cost:Number(document.getElementById('emPersonalCost')?.value||0),sale:Number(document.getElementById('emPersonalSale')?.value||0),comp1Name:(document.getElementById('emPersonalCompName1')?.value||'').trim(),comp1Price:Number(document.getElementById('emPersonalCompPrice1')?.value||0),comp2Name:(document.getElementById('emPersonalCompName2')?.value||'').trim(),comp2Price:Number(document.getElementById('emPersonalCompPrice2')?.value||0),comp3Name:(document.getElementById('emPersonalCompName3')?.value||'').trim(),comp3Price:Number(document.getElementById('emPersonalCompPrice3')?.value||0),notes:(document.getElementById('emPersonalNotes')?.value||'').trim(),photo:modal?.dataset?.newPhoto||old.photo||'',updatedAt:new Date().toISOString()};
+ if(idx>=0)list[idx]=item;else list.unshift(item);
+ if(emSavePersonalInventory(list)){emClosePersonalInventoryEditor();emRenderPersonalInventory();emClientAlert('Artículo guardado en tu inventario personal.');}
+}
+function emDeletePersonalInventoryItem(id){const list=emGetPersonalInventory();const item=list.find(x=>String(x.id)===String(id));if(!item)return;if(!confirm('⚠️ ¿Estás seguro de eliminar definitivamente "'+item.name+'" del inventario personal?\n\nEste registro se borrará de forma permanente y no se puede deshacer.'))return;if(!confirm('Última confirmación: ¿eliminar definitivamente este registro?'))return;emSavePersonalInventory(list.filter(x=>String(x.id)!==String(id)));emRenderPersonalInventory();emClientAlert('Registro eliminado permanentemente.');}
+function emRenderPersonalInventory(){
+ const rows=document.getElementById('emPersonalRows');if(!rows)return;
+ emSyncPersonalInventoryFromProducts(false);
+ const catSel=document.getElementById('emPersonalCatFilter');
+ if(catSel){
+  const activeCats=(Array.isArray(EM.categories)?EM.categories:[]).filter(c=>c.visible!==false).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es'));
+  const oldCat=catSel.value;
+  catSel.innerHTML='<option value="">Todas las categorías activas</option>'+activeCats.map(c=>'<option value="'+escapeHtml(String(c.id||''))+'">'+escapeHtml(c.name||'Categoría')+'</option>').join('');
+  if(activeCats.some(c=>String(c.id)===String(oldCat)))catSel.value=oldCat;else catSel.value='';
+ }
+ const selectedCat=catSel?.value||'';
+ const q=(document.getElementById('emPersonalSearch')?.value||'').toLowerCase();
+ const allPersonal=emGetPersonalInventory();
+ const list=allPersonal.filter(x=>{
+   const source=x.sourceProductId?EM.products.find(p=>String(p.id)===String(x.sourceProductId)):null;
+   const categoryId=source?.category_id||x.categoryId||'';
+   const categoryName=source?.cat||x.categoryName||'';
+   const catMatch=!selectedCat||String(categoryId)===String(selectedCat);
+   const searchMatch=!q||String(x.name||'').toLowerCase().includes(q)||String(x.notes||'').toLowerCase().includes(q)||String(categoryName||'').toLowerCase().includes(q);
+   return catMatch&&searchMatch;
+ });
+ const totalCost=list.reduce((a,x)=>a+Number(x.cost||0),0),totalSale=list.reduce((a,x)=>a+Number(x.sale||0),0),profit=totalSale-totalCost;
+ const sum=document.getElementById('emPersonalSummary');if(sum)sum.innerHTML='<div class="em-personal-stat"><small>Invertido</small><b>'+emPersonalMoney(totalCost)+'</b></div><div class="em-personal-stat"><small>Venta estimada</small><b>'+emPersonalMoney(totalSale)+'</b></div><div class="em-personal-stat"><small>Ganancia estimada</small><b>'+emPersonalMoney(profit)+'</b></div>';
+ rows.innerHTML=list.length?list.map(x=>{const g=Number(x.sale||0)-Number(x.cost||0);const comps=[1,2,3].map(n=>Number(x['comp'+n+'Price']||0)>0?'<div><b>'+escapeHtml(x['comp'+n+'Name']||('Tienda '+n))+'</b>: '+emPersonalMoney(x['comp'+n+'Price'])+'</div>':'').join('');return '<tr><td><div style="display:flex;align-items:center;gap:10px">'+(x.photo?'<img src="'+escapeHtml(x.photo)+'" class="em-personal-thumb" alt="'+escapeHtml(x.name)+'" onclick="emOpenPersonalImage(this.src,this.alt)" title="Ver imagen grande">':'<div class="em-personal-thumb em-personal-no-photo">Sin foto</div>')+'<div><b>'+escapeHtml(x.name)+'</b></div></div></td><td>'+emPersonalMoney(x.cost)+'</td><td>'+emPersonalMoney(x.sale)+'</td><td><b style="color:'+(g>=0?'#18794e':'#b00020')+'">'+emPersonalMoney(g)+'</b></td><td style="min-width:180px;font-size:11px;color:#555">'+(comps||'<span style="color:#999">Sin comparativos</span>')+'</td><td style="max-width:220px;white-space:pre-wrap;color:#777">'+escapeHtml(x.notes||'')+'</td><td><button onclick="emOpenPersonalInventoryEditor(\''+escapeHtml(x.id)+'\')">✏️ Editar</button> <button onclick="emDeletePersonalInventoryItem(\''+escapeHtml(x.id)+'\')" style="background:#fff0f0;color:#b00020;border:1px solid #f0caca">🗑️</button></td></tr>';}).join(''):'<tr><td colspan="7" style="text-align:center;color:#777;padding:35px">Aún no tienes artículos en tu inventario personal. Pulsa <b>＋ Agregar artículo</b> para comenzar.</td></tr>';
+}
+
 function emRunIntegrationCheck(){
  emEnsureDefaults();
  const results=[
