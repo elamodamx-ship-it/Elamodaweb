@@ -2653,37 +2653,93 @@ function emPersonalPublishedPrice(p){
   return Number.isFinite(Number(value))?Number(value):0;
  }catch(_){return Number(p?.price||0)||0;}
 }
+function emPersonalNormalizeName(value){
+ return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,' ').toLocaleLowerCase('es');
+}
+function emPersonalEntryScore(item){
+ if(!item)return 0;
+ let score=0;
+ if(Number(item.cost||0)>0)score+=5;
+ if(Number(item.sale||0)>0)score+=2;
+ if(item.photo)score+=2;
+ if(String(item.notes||'').trim())score+=1;
+ [1,2,3].forEach(n=>{if(String(item['comp'+n+'Name']||'').trim()||Number(item['comp'+n+'Price']||0)>0)score+=1;});
+ if(item.sourceProductId)score+=1;
+ return score;
+}
 async function emSyncPersonalInventoryFromProducts(showMessage=false){
  const products=Array.isArray(EM.products)?EM.products:[];
- const list=emGetPersonalInventory();
- const bySource=new Map(list.filter(x=>x.sourceProductId).map(x=>[String(x.sourceProductId),x]));
- let added=0;
- products.forEach(p=>{
-  if(!p?.id)return;
-  const key=String(p.id);
-  if(bySource.has(key))return;
-  const item={
-   id:'pi_product_'+key,
-   sourceProductId:key,
-   name:p.name||'Producto',
-   photo:emPersonalProductPhoto(p),
-   cost:0,
-   sale:emPersonalPublishedPrice(p),
-   comp1Name:'',comp1Price:0,comp2Name:'',comp2Price:0,comp3Name:'',comp3Price:0,
-   categoryId:p.category_id||'',
-   categoryName:p.cat||'',
-   notes:'',
-   updatedAt:new Date().toISOString()
-  };
-  list.push(item);bySource.set(key,item);added++;
- });
- if(added){
+ let list=emGetPersonalInventory();
+ let added=0, linked=0, removed=0;
+ const now=new Date().toISOString();
+ /* Reutiliza el registro personal existente por ID de producto o nombre exacto.
+    Así no se crea una segunda fila cuando se captura el costo del mismo artículo. */
+ for(const p of products){
+  if(!p?.id)continue;
+  const key=String(p.id), nameKey=emPersonalNormalizeName(p.name);
+  let matches=list.filter(x=>String(x.sourceProductId||'')===key);
+  if(!matches.length && nameKey)matches=list.filter(x=>emPersonalNormalizeName(x.name)===nameKey);
+  if(matches.length){
+   matches.sort((a,b)=>emPersonalEntryScore(b)-emPersonalEntryScore(a));
+   const keep=matches[0];
+   if(!keep.sourceProductId){keep.sourceProductId=key;linked++;}
+   keep.categoryId=keep.categoryId||p.category_id||'';
+   keep.categoryName=keep.categoryName||p.cat||'';
+   /* Mantiene precios, foto, notas y comparativos introducidos manualmente. */
+   if(!keep.photo)keep.photo=emPersonalProductPhoto(p);
+   if(!(Number(keep.sale||0)>0))keep.sale=emPersonalPublishedPrice(p);
+   keep.updatedAt=keep.updatedAt||now;
+   for(const duplicate of matches.slice(1)){
+    /* Antes de quitar un duplicado, conserva cualquier dato útil que solo tenga esa fila. */
+    if(!(Number(keep.cost||0)>0)&&Number(duplicate.cost||0)>0)keep.cost=duplicate.cost;
+    if(!(Number(keep.sale||0)>0)&&Number(duplicate.sale||0)>0)keep.sale=duplicate.sale;
+    if(!keep.photo&&duplicate.photo)keep.photo=duplicate.photo;
+    if(!keep.notes&&duplicate.notes)keep.notes=duplicate.notes;
+    for(let n=1;n<=3;n++){
+     if(!keep['comp'+n+'Name']&&duplicate['comp'+n+'Name'])keep['comp'+n+'Name']=duplicate['comp'+n+'Name'];
+     if(!(Number(keep['comp'+n+'Price']||0)>0)&&Number(duplicate['comp'+n+'Price']||0)>0)keep['comp'+n+'Price']=duplicate['comp'+n+'Price'];
+    }
+    list=list.filter(x=>x!==duplicate);removed++;
+   }
+  }else{
+   const item={id:'pi_product_'+key,sourceProductId:key,name:p.name||'Producto',photo:emPersonalProductPhoto(p),cost:0,sale:emPersonalPublishedPrice(p),comp1Name:'',comp1Price:0,comp2Name:'',comp2Price:0,comp3Name:'',comp3Price:0,categoryId:p.category_id||'',categoryName:p.cat||'',notes:'',updatedAt:now};
+   list.push(item);added++;
+  }
+ }
+ /* Limpieza global: también elimina duplicados manuales que no quedaron vinculados a un producto publicado. */
+ const grouped=new Map();
+ for(const item of list.slice()){
+  const nk=emPersonalNormalizeName(item.name);
+  if(!nk)continue;
+  if(!grouped.has(nk)){grouped.set(nk,item);continue;}
+  const current=grouped.get(nk);
+  const keep=emPersonalEntryScore(item)>emPersonalEntryScore(current)?item:current;
+  const duplicate=keep===item?current:item;
+  if(!keep.sourceProductId&&duplicate.sourceProductId)keep.sourceProductId=duplicate.sourceProductId;
+  if(!keep.categoryId&&duplicate.categoryId)keep.categoryId=duplicate.categoryId;
+  if(!keep.categoryName&&duplicate.categoryName)keep.categoryName=duplicate.categoryName;
+  if(!(Number(keep.cost||0)>0)&&Number(duplicate.cost||0)>0)keep.cost=duplicate.cost;
+  if(!(Number(keep.sale||0)>0)&&Number(duplicate.sale||0)>0)keep.sale=duplicate.sale;
+  if(!keep.photo&&duplicate.photo)keep.photo=duplicate.photo;
+  if(!keep.notes&&duplicate.notes)keep.notes=duplicate.notes;
+  for(let n=1;n<=3;n++){
+   if(!keep['comp'+n+'Name']&&duplicate['comp'+n+'Name'])keep['comp'+n+'Name']=duplicate['comp'+n+'Name'];
+   if(!(Number(keep['comp'+n+'Price']||0)>0)&&Number(duplicate['comp'+n+'Price']||0)>0)keep['comp'+n+'Price']=duplicate['comp'+n+'Price'];
+  }
+  grouped.set(nk,keep);list=list.filter(x=>x!==duplicate);removed++;
+ }
+ if(added||linked||removed){
   if(!(await emSavePersonalInventory(list)))return 0;
  }
- if(showMessage)emClientAlert(added?('Se agregaron '+added+' artículo(s) nuevos a tu inventario personal.'):'Todos los artículos ya estaban registrados.');
+ if(showMessage){
+  const parts=[];
+  if(added)parts.push(added+' artículo(s) nuevo(s)');
+  if(linked)parts.push(linked+' registro(s) existente(s) vinculados');
+  if(removed)parts.push(removed+' duplicado(s) unificado(s)');
+  emClientAlert(parts.length?'Inventario personal actualizado: '+parts.join(', ')+'.':'Todos los artículos ya estaban registrados.');
+ }
  return added;
 }
-
 function emOpenPersonalInventoryEditor(id){
  const list=emGetPersonalInventory(), item=list.find(x=>String(x.id)===String(id))||{};
  const old=document.getElementById('emPersonalInventoryModal');if(old)old.remove();
@@ -2717,7 +2773,7 @@ async function emSavePersonalInventoryItem(){
  const id=document.getElementById('emPersonalId')?.value||('pi_'+Date.now());
  const list=emGetPersonalInventory(),idx=list.findIndex(x=>String(x.id)===String(id));
  const old=idx>=0?list[idx]:{};const modal=document.getElementById('emPersonalInventoryModal');
- const item={id,name,cost:Number(document.getElementById('emPersonalCost')?.value||0),sale:Number(document.getElementById('emPersonalSale')?.value||0),comp1Name:(document.getElementById('emPersonalCompName1')?.value||'').trim(),comp1Price:Number(document.getElementById('emPersonalCompPrice1')?.value||0),comp2Name:(document.getElementById('emPersonalCompName2')?.value||'').trim(),comp2Price:Number(document.getElementById('emPersonalCompPrice2')?.value||0),comp3Name:(document.getElementById('emPersonalCompName3')?.value||'').trim(),comp3Price:Number(document.getElementById('emPersonalCompPrice3')?.value||0),notes:(document.getElementById('emPersonalNotes')?.value||'').trim(),photo:modal?.dataset?.newPhoto||old.photo||'',updatedAt:new Date().toISOString()};
+ const item={id,name,sourceProductId:old.sourceProductId||'',categoryId:old.categoryId||'',categoryName:old.categoryName||'',cost:Number(document.getElementById('emPersonalCost')?.value||0),sale:Number(document.getElementById('emPersonalSale')?.value||0),comp1Name:(document.getElementById('emPersonalCompName1')?.value||'').trim(),comp1Price:Number(document.getElementById('emPersonalCompPrice1')?.value||0),comp2Name:(document.getElementById('emPersonalCompName2')?.value||'').trim(),comp2Price:Number(document.getElementById('emPersonalCompPrice2')?.value||0),comp3Name:(document.getElementById('emPersonalCompName3')?.value||'').trim(),comp3Price:Number(document.getElementById('emPersonalCompPrice3')?.value||0),notes:(document.getElementById('emPersonalNotes')?.value||'').trim(),photo:modal?.dataset?.newPhoto||old.photo||'',updatedAt:new Date().toISOString()};
  if(idx>=0)list[idx]=item;else list.unshift(item);
  if(await emSavePersonalInventory(list)){emClosePersonalInventoryEditor();emRenderPersonalInventory();emClientAlert('Artículo guardado en tu inventario personal.');}
 }
@@ -3124,7 +3180,7 @@ function emTicketSaveSale(){
 function emTicketPrint(sale){
  const items=Array.isArray(sale.items)?sale.items:[];const rows=items.map(x=>'<tr><td>'+escapeHtml(x.name)+'<small style="display:block;color:#555">'+escapeHtml(x.brand||x.source||'')+'</small></td><td style="text-align:center">'+Number(x.qty||1)+'</td><td style="text-align:right">'+emMoney(x.unit_price)+'</td><td style="text-align:right">'+emMoney(Number(x.qty||1)*Number(x.unit_price||0))+'</td></tr>').join('');
  const w=window.open('','_blank','width=760,height=800');if(!w){emClientAlert('Tu navegador bloqueó la ventana de impresión. Permite ventanas emergentes para imprimir el ticket.');return;}
- w.document.write('<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Ticket '+escapeHtml(sale.folio)+'</title><style>body{font:14px Arial,sans-serif;color:#171717;max-width:720px;margin:28px auto;padding:0 20px}header{text-align:center;border-bottom:2px solid #800020;padding-bottom:16px}h1{font:30px Georgia,serif;margin:0 0 5px}small{font-size:11px}table{width:100%;border-collapse:collapse;margin-top:22px}th,td{padding:10px 5px;border-bottom:1px solid #ddd;text-align:left}th{font-size:11px;text-transform:uppercase}.totals{width:300px;margin:18px 0 0 auto}.totals div{display:flex;justify-content:space-between;padding:6px}.grand{font-size:21px;font-weight:bold;border-top:2px solid #800020;margin-top:5px;padding-top:10px!important}.thanks{text-align:center;margin-top:35px;color:#555}@media print{body{margin:0 auto;padding:10mm}}</style></head><body><header><h1>Elamoda</h1><div>Expresa tu estilo · Luce tu esencia</div><p>Ticket de compra</p></header><p><b>Folio:</b> '+escapeHtml(sale.folio)+'<br><b>Fecha:</b> '+escapeHtml(sale.created_at?new Date(sale.created_at).toLocaleString('es-MX'):new Date().toLocaleString('es-MX'))+'<br><b>Cliente:</b> '+escapeHtml(sale.customer_name||'Público general')+'<br><b>Pago:</b> '+escapeHtml(sale.payment_method||'—')+'</p><table><thead><tr><th>Artículo</th><th>Cant.</th><th style="text-align:right">Precio</th><th style="text-align:right">Importe</th></tr></thead><tbody>'+rows+'</tbody></table><div class="totals"><div><span>Subtotal de artículos</span><b>'+emMoney(sale.subtotal)+'</b></div><div><span>Envío</span><b>+'+emMoney(sale.shipping||0)+'</b></div><div><span>Descuento de garantía</span><b>−'+emMoney(sale.guaranteeDiscount||0)+'</b></div><div class="grand"><span>TOTAL</span><span>'+emMoney(sale.total)+'</span></div></div><div class="thanks">¡Gracias por tu compra!<br><small>Conserva este ticket como comprobante de tu venta.</small></div><script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>');w.document.close();
+ w.document.write('<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Ticket '+escapeHtml(sale.folio)+'</title><style>body{font:14px Arial,sans-serif;color:#171717;max-width:720px;margin:28px auto;padding:0 20px}header{text-align:center;border-bottom:2px solid #800020;padding-bottom:16px}h1{font:48px Georgia,serif;font-weight:600;letter-spacing:-1.2px;margin:0 0 4px;line-height:1.05}small{font-size:11px}table{width:100%;border-collapse:collapse;margin-top:22px}th,td{padding:10px 5px;border-bottom:1px solid #ddd;text-align:left}th{font-size:11px;text-transform:uppercase}.totals{width:300px;margin:18px 0 0 auto}.totals div{display:flex;justify-content:space-between;padding:6px}.grand{font-size:21px;font-weight:bold;border-top:2px solid #800020;margin-top:5px;padding-top:10px!important}.thanks{text-align:center;margin-top:35px;color:#555}@media print{body{margin:0 auto;padding:10mm}}</style></head><body><header><h1>Elamoda</h1><div style="font-size:11px;letter-spacing:2px;font-weight:600;margin-top:3px">TU ESTILO, A TU MANERA</div><p>Ticket de compra</p></header><p><b>Folio:</b> '+escapeHtml(sale.folio)+'<br><b>Fecha:</b> '+escapeHtml(sale.created_at?new Date(sale.created_at).toLocaleString('es-MX'):new Date().toLocaleString('es-MX'))+'<br><b>Cliente:</b> '+escapeHtml(sale.customer_name||'Público general')+'<br><b>Pago:</b> '+escapeHtml(sale.payment_method||'—')+'</p><table><thead><tr><th>Artículo</th><th>Cant.</th><th style="text-align:right">Precio</th><th style="text-align:right">Importe</th></tr></thead><tbody>'+rows+'</tbody></table><div class="totals"><div><span>Subtotal de artículos</span><b>'+emMoney(sale.subtotal)+'</b></div><div><span>Envío</span><b>+'+emMoney(sale.shipping||0)+'</b></div><div><span>Descuento de garantía</span><b>−'+emMoney(sale.guaranteeDiscount||0)+'</b></div><div class="grand"><span>TOTAL</span><span>'+emMoney(sale.total)+'</span></div></div><div class="thanks">¡Gracias por tu compra!<br><small>Conserva este ticket como comprobante de tu venta.</small></div><script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>');w.document.close();
 }
 
 (function(){
