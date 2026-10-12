@@ -2616,27 +2616,43 @@ document.addEventListener('DOMContentLoaded',async()=>{
 function emGetPersonalInventory(){
  try{const x=JSON.parse(localStorage.getItem('ELAMODA_PERSONAL_INVENTORY_V1')||'[]');return Array.isArray(x)?x:[];}catch(e){return[];}
 }
+let emPersonalCloudReady=false, emPersonalCloudPromise=null, emPersonalCloudError='';
+async function emEnsurePersonalInventoryCloud(){
+ if(emPersonalCloudReady)return true;
+ if(emPersonalCloudPromise)return emPersonalCloudPromise;
+ emPersonalCloudPromise=(async()=>{
+  try{
+   if(!window.elamodaSB)throw new Error('No se inicializó Supabase');
+   const {data,error}=await window.elamodaSB.from('elamoda_personal_inventory').select('items').eq('id','main').maybeSingle();
+   if(error)throw error;
+   if(data&&Array.isArray(data.items)){
+    localStorage.setItem('ELAMODA_PERSONAL_INVENTORY_V1',JSON.stringify(data.items));
+   }else{
+    const local=emGetPersonalInventory();
+    if(local.length){const {error:saveError}=await window.elamodaSB.from('elamoda_personal_inventory').upsert({id:'main',items:local,updated_at:new Date().toISOString()},{onConflict:'id'});if(saveError)throw saveError;}
+   }
+   emPersonalCloudReady=true;emPersonalCloudError='';return true;
+  }catch(e){emPersonalCloudError=e?.message||String(e);console.error('Inventario personal en la nube:',e);return false;}
+ })();
+ const ok=await emPersonalCloudPromise;emPersonalCloudPromise=null;return ok;
+}
 function emPersonalCompressDataUrl(data,max=480,quality=.48){return new Promise(resolve=>{if(typeof data!=='string'||!data.startsWith('data:image/')){resolve(data||'');return;}const img=new Image();img.onload=()=>{try{const scale=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',quality));}catch(e){resolve('');}};img.onerror=()=>resolve('');img.src=data;});}
 async function emSavePersonalInventory(list){
  const key='ELAMODA_PERSONAL_INVENTORY_V1';
- try{localStorage.setItem(key,JSON.stringify(list));return true;}catch(firstError){
-  try{
-   /* Recover from localStorage quota by compressing embedded photos before retrying. */
-   const compact=await Promise.all((list||[]).map(async item=>{
-    if(item&&typeof item.photo==='string'&&item.photo.startsWith('data:image/')){
-     const photo=await emPersonalCompressDataUrl(item.photo,420,.42);
-     return {...item,photo};
-    }
-    return item;
-   }));
-   localStorage.setItem(key,JSON.stringify(compact));
-   emClientAlert('Inventario guardado. Optimizamos las fotos para que ocupen menos espacio.');
-   return true;
-  }catch(secondError){
-   console.error('Elamoda personal inventory storage:',firstError,secondError);
-   emClientAlert('No se pudo guardar el inventario personal porque el almacenamiento del navegador está lleno. No borramos tus registros. Libera espacio del sitio o reduce/elimina fotos grandes y vuelve a intentar.');
-   return false;
-  }
+ let compact=list;
+ try{localStorage.setItem(key,JSON.stringify(compact));}catch(firstError){
+  try{compact=await Promise.all((list||[]).map(async item=>item&&typeof item.photo==='string'&&item.photo.startsWith('data:image/')?{...item,photo:await emPersonalCompressDataUrl(item.photo,420,.42)}:item));localStorage.setItem(key,JSON.stringify(compact));emClientAlert('Optimizamos las fotos para que ocupen menos espacio.');}
+  catch(secondError){console.error('Elamoda personal inventory storage:',firstError,secondError);emClientAlert('No se pudo guardar: el almacenamiento del navegador está lleno. No borramos tus registros.');return false;}
+ }
+ try{
+  if(!window.elamodaSB)throw new Error('Supabase no está disponible');
+  const {error}=await window.elamodaSB.from('elamoda_personal_inventory').upsert({id:'main',items:compact,updated_at:new Date().toISOString()},{onConflict:'id'});
+  if(error)throw error;
+  emPersonalCloudReady=true;emPersonalCloudError='';return true;
+ }catch(e){
+  emPersonalCloudError=e?.message||String(e);console.error('No se pudo sincronizar inventario personal:',e);
+  emClientAlert('El cambio quedó guardado en este dispositivo, pero NO se pudo guardar en la nube. Ejecuta el SQL de inventario personal en Supabase y vuelve a intentar. Detalle: '+emPersonalCloudError);
+  return false;
  }
 }
 function emPersonalMoney(v){return emMoney(Number(v||0));}
@@ -2780,6 +2796,8 @@ async function emSavePersonalInventoryItem(){
 async function emDeletePersonalInventoryItem(id){const list=emGetPersonalInventory();const item=list.find(x=>String(x.id)===String(id));if(!item)return;if(!confirm('⚠️ ¿Estás seguro de eliminar definitivamente "'+item.name+'" del inventario personal?\n\nEste registro se borrará de forma permanente y no se puede deshacer.'))return;if(!confirm('Última confirmación: ¿eliminar definitivamente este registro?'))return;if(await emSavePersonalInventory(list.filter(x=>String(x.id)!==String(id)))){emRenderPersonalInventory();emClientAlert('Registro eliminado permanentemente.');}}
 async function emRenderPersonalInventory(){
  const rows=document.getElementById('emPersonalRows');if(!rows)return;
+ const cloudOK=await emEnsurePersonalInventoryCloud();
+ if(!cloudOK){emClientAlert('No pudimos conectar el inventario personal con la nube. Tus datos locales se conservaron. Revisa que hayas ejecutado el SQL y que tu sesión de administrador esté activa.');}
  await emSyncPersonalInventoryFromProducts(false);
  const catSel=document.getElementById('emPersonalCatFilter');
  if(catSel){
